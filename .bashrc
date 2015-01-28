@@ -9,6 +9,14 @@ alias ssh='ssh -A -X' # Enable agent forwarding and X11 forwarding
 function lmv(){ [ -e $1 -a -e $2 ] && mv $1 $2 && ln -s $2/$(basename $1) $(dirname $1); }
 
 #alias ls='ls -B --color=tty'
+alias cresults="cd ~/Google\ Drive/experiments/"
+alias nresults="mkdir -p ~/Google\ Drive/experiments/$(date +%Y-%m-%d)"
+alias tresults="cd ~/Google\ Drive/experiments/$(date +%Y-%m-%d)"
+# make a directory and cd into it
+mkcd () 
+{ 
+    mkdir -p $1 && cd $1
+}
 
 ## Set up history 
 # Keep the last 2000 commands in the history
