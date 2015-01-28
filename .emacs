@@ -567,3 +567,4 @@ Returns t if the feature was successfully required."
 (custom-set-variables
  '(load-home-init-file t t))
 (custom-set-faces)
+(put 'narrow-to-region 'disabled nil)
