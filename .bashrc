@@ -1,11 +1,11 @@
 # User dependent .bashrc file
 
-export PATH=/usr/local/bin:/sw/bin:/sw/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/2.7/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
-
 umask 0022
+#export PATH=/usr/local/bin:/sw/bin:/sw/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/2.7/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:$PATH
 
 alias ssh='ssh -A -X' # Enable agent forwarding and X11 forwarding
 
+# Move a file and replace original location with symbolic link 
 function lmv(){ [ -e $1 -a -e $2 ] && mv $1 $2 && ln -s $2/$(basename $1) $(dirname $1); }
 
 #alias ls='ls -B --color=tty'
@@ -24,12 +24,6 @@ shopt -s histappend
 shopt -s checkwinsize
 shopt -s extglob
 
-# redundant
-# Setting PATH for Python 2.7
-# The orginal version is saved in .bash_profile.pysave
-#PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin:${PATH}"
-#export PATH
-
 export JAVA_HOME=$(/usr/libexec/java_home)
 # EC2 CLI stuff
 export EC2_HOME=/usr/local/ec2/ec2-api-tools-1.7.1.0
@@ -40,19 +34,28 @@ fi
 
 
 # Go stuff
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
-export PATH=$PATH:/usr/local/opt/go/libexec/bin
+if [ -d $HOME/go ]; then
+    export GOPATH=$HOME/go
+    export PATH=$PATH:$GOPATH/bin
+fi
 
 # Set PATH so it includes user's private bin if it exists
  if [ -d ~/bin ] ; then
-   PATH="~/bin:${PATH}"
+   export PATH="~/bin:${PATH}"
  fi
 
 # Set PATH so it includes user's private bin if it exists
  if [ -d ~/scripts ] ; then
-   PATH="~/scripts:${PATH}"
+   export PATH="~/scripts:${PATH}"
  fi
+
+if [ -d /opt/local/bin ] ; then 
+    export PATH="/opt/local/bin:$PATH"
+fi
+
+if [ -d /opt/local/sbin ] ; then
+    export PATH="/opt/local/sbin:$PATH"
+fi
 
 # Inlucde /usr/gnu if it exists
  if [ -d /usr/gnu ] ; then
@@ -73,8 +76,8 @@ function ucscope {
     cscope -b -q -k
 }
 
-export EDITOR=xemacs
-export VISUAL=xemacs
+export EDITOR=emacs
+export VISUAL=emacs
 
 
 # Local specific commands go in another file

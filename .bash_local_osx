@@ -1,4 +1,7 @@
 
+export PATH=/Library/Frameworks/Python.framework/Versions/2.7/bin:$PATH
+export PATH=$PATH:/usr/local/opt/go/libexec/bin
+
 # aliases for dealing with experimental results
 alias cresults="cd ~/Google\ Drive/experiments/"
 alias nresults="mkdir -p ~/Google\ Drive/experiments/$(date +%Y-%m-%d)"
