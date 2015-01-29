@@ -23,7 +23,6 @@ shopt -s histappend
 shopt -s checkwinsize
 shopt -s extglob
 
-export JAVA_HOME=$(/usr/libexec/java_home)
 # EC2 CLI stuff
 export EC2_HOME=/usr/local/ec2/ec2-api-tools-1.7.1.0
 export PATH=$PATH:$EC2_HOME/bin 
