@@ -24,8 +24,11 @@ shopt -s checkwinsize
 shopt -s extglob
 
 # EC2 CLI stuff
-export EC2_HOME=/usr/local/ec2/ec2-api-tools-1.7.1.0
-export PATH=$PATH:$EC2_HOME/bin 
+if [ -e ~/usr/local/ec2/ec2-api-tools-1.7.1.0 ]; then
+    export EC2_HOME=/usr/local/ec2/ec2-api-tools-1.7.1.0
+    export PATH=$PATH:$EC2_HOME/bin 
+fi
+
 if [ -e ~/.aws_settings ] ; then
     . ~/.aws_settings
 fi
