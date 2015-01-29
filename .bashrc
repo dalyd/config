@@ -1,7 +1,6 @@
 # User dependent .bashrc file
 
 umask 0022
-#export PATH=/usr/local/bin:/sw/bin:/sw/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/2.7/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:$PATH
 
 alias ssh='ssh -A -X' # Enable agent forwarding and X11 forwarding
 
