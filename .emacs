@@ -11,6 +11,13 @@
 (add-to-list 'load-path "~/.emacs.d/elpa/go")
 (require 'go-mode-load)
 
+;;; Markdown mode support 
+(add-to-list 'load-path "~/.emacs.d/markdown")
+(autoload 'markdown-mode "markdown-mode"
+   "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;;; Make sure autosuggest of keybindings is enabled. Maybe I'll learn something
 (setq suggest-key-bindings t)
