@@ -45,57 +45,31 @@
 ;;;; enable revbufs
 (autoload 'revbufs "revbufs" "Revert changed buffers." t)
 
-;;;; Bluespec mode
-(autoload 'bsv-mode "bsv-mode" "BSV mode" t )
-(setq auto-mode-alist (cons  '("\\.bsv\\'" . bsv-mode) auto-mode-alist))
-
 ;; cscope -- not on all machines
-(ignore-errors (require 'xcscope))
+;(ignore-errors (require 'xcscope))
 
-;; breadcrump
-;(require 'breadcrumb)
+;; ;; pymacs
+;; (autoload 'pymacs-load "pymacs" nil t)
+;; (autoload 'pymacs-eval "pymacs" nil t)
+;; (autoload 'pymacs-apply "pymacs")
+;; (autoload 'pymacs-call "pymacs")
 
-;; psvn: Start interface with M-x svn-status
-;; Has trouble with CVS files. Interferes. Uncomment when using svn
-;(ignore-errors (require 'psvn))
-
-;; pymacs
-;(autoload 'pymacs-load "pymacs" nil t)
-;(autoload 'pymacs-eval "pymacs" nil t)
-;(autoload 'pymacs-apply "pymacs")
-;(autoload 'pymacs-call "pymacs")
-
-;(pymacs-load "bikeemacs" "brm-")
-;(brm-init)
+;; (pymacs-load "bikeemacs" "brm-")
+;; (brm-init)
 
 ;(autoload 'python-mode "python-mode" "Python editing mode." t)
 ;(setq auto-mode-alist
 ;      (cons '("\\.py$" . python-mode) auto-mode-alist))
 
-
-;(require 'flymake)
-
-;(setq planner-project "WikiPlanner")
-
-;(setq muse-project-alist
-;      '(("WikiPlanner"
-;	 ("~/plans"   ;; Or wherever you want your planner files to be
-;	  :default "index"
-;	  :major-mode planner-mode
-;	  :visit-link planner-visit-link))))
-;(ignore-errors (require 'planner))
-
-;(ignore-errors (require 'muse-mode))
-
-;;; AUCTex configurations
-(ignore-errors
-  (load-library "latex.el")
-  (require 'tex-site)
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq-default TeX-master nil)
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
-  (add-hook 'latex-mode-hook 'turn-on-reftex))   ; with Emacs latex mode
+;; ;;; AUCTex configurations
+;; (ignore-errors
+;;   (load-library "latex.el")
+;;   (require 'tex-site)
+;;   (setq TeX-auto-save t)
+;;   (setq TeX-parse-self t)
+;;   (setq-default TeX-master nil)
+;;   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
+;;   (add-hook 'latex-mode-hook 'turn-on-reftex))   ; with Emacs latex mode
 
 ;; To enable syntax highlighting by default in all buffers, as well as
 ;; keeping the highlighting up to date as you edit the document.
@@ -137,7 +111,7 @@ Returns t if the feature was successfully required."
 
 (defun truncon ()
   (interactive)
-  (setq truncate-lines t)
+  (Setq truncate-lines t)
 )
 
 (defun truncoff ()
@@ -297,14 +271,6 @@ Returns t if the feature was successfully required."
   (if (member item lst)
       lst
       (nconc lst (list item))))
-
-;(defun list-meetings2 ()
-;  (interactive)
-;  (labels ((addmeeting (head meetings) 
-;                 (if (and (>= (length head) 4) (string-equal (substring head -4 nil ) ".txt"))
-;                         (unique-append head meetings)
-;                         meetings))))
-;  
 
 
 (defun list-meetings ()
@@ -564,7 +530,7 @@ Returns t if the feature was successfully required."
 (define-key 'log-keymap "d" 'log_did_something)
 
 ; turn off word complete in minibuffer completion. Allows spaces
-(define-key minibuffer-local-completion-map 'space nil)
+;(define-key minibuffer-local-completion-map 'space nil)
 
 ;;; emacs compatibility
 (eval-and-compile ;; Protect against declare-function undefined in XEmacs
