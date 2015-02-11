@@ -11,3 +11,7 @@ function nresults {
 function tresults {
     cd ~/Google\ Drive/experiments/$(date +%Y-%m-%d)
 }
+
+
+# code review alias 
+alias cr='python /Users/daviddaly/kernel-tools/codereview/upload.py \-y \-s codereview.10gen.com \-m'
