@@ -9,6 +9,7 @@ function nresults {
     mkdir -p ~/Google\ Drive/experiments/$(date +%Y-%m-%d)
 }        
 function tresults {
+    mkdir -p ~/Google\ Drive/experiments/$(date +%Y-%m-%d)
     cd ~/Google\ Drive/experiments/$(date +%Y-%m-%d)
 }
 
