@@ -36,7 +36,8 @@ fi
 
 # Go stuff
 if [ -d $HOME/go ]; then
-    export GOPATH=$HOME/go
+    export GOROOT=$HOME/go
+    export GOPATH=$GOROOT/bin
     export PATH=$PATH:$GOPATH/bin
 fi
 
