@@ -81,8 +81,15 @@ function ucscope {
 export EDITOR=emacs
 export VISUAL=emacs
 
+## History settings
+# Show timestamps in history
+export HISTTIMEFORMAT="%h %d %H:%M:%S> "
+# Squash repeated commands into one
+export HISTCONTROL=ignoredups
+
 
 # Local specific commands go in another file
 if [ -e ~/.bash_local ] ; then
     . ~/.bash_local
 fi
+
