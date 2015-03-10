@@ -19,6 +19,14 @@ mkcd ()
 export HISTSIZE=2000
 # Append to the bash history rather than clearing it
 shopt -s histappend
+# Store multilines as one
+shopt -s cmdhist
+# Show timestamps in history
+export HISTTIMEFORMAT="%h %d %H:%M:%S> "
+# Squash repeated commands into one
+export HISTCONTROL=ignoredups
+
+
 # Force bash to check the windowsize frequently so line wrap works properly
 shopt -s checkwinsize
 shopt -s extglob
@@ -80,12 +88,6 @@ function ucscope {
 
 export EDITOR=emacs
 export VISUAL=emacs
-
-## History settings
-# Show timestamps in history
-export HISTTIMEFORMAT="%h %d %H:%M:%S> "
-# Squash repeated commands into one
-export HISTCONTROL=ignoredups
 
 
 # Local specific commands go in another file
