@@ -26,6 +26,8 @@ export HISTTIMEFORMAT="%h %d %H:%M:%S> "
 # Squash repeated commands into one
 export HISTCONTROL=ignoredups
 
+export PROMPT_COMMAND='history -a;'$PROMPT_COMMAND
+
 
 # Force bash to check the windowsize frequently so line wrap works properly
 shopt -s checkwinsize
@@ -50,7 +52,7 @@ if [ -d $HOME/go ]; then
 fi
 
 # Set PATH so it includes user's private bin if it exists
- if [ -d ~/bin ] ; then
+if [ -d ~/bin ] ; then
    export PATH="~/bin:${PATH}"
  fi
 
