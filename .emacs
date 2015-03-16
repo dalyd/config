@@ -7,6 +7,11 @@
 (add-hook 'text-mode-hook 'text-mode-hook-identify)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
+;;; elpa magic
+(require 'package)
+(setq package-enable-at-startup nil)
+(package-initialize)
+
 ;;; go support
 (add-to-list 'load-path "~/.emacs.d/elpa/go")
 (require 'go-mode-load)
@@ -363,6 +368,17 @@ Returns t if the feature was successfully required."
 (global-set-key "\C-x\C-b" 'ibuffer)
 
 (custom-set-variables
- '(load-home-init-file t t))
-(custom-set-faces)
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(load-home-init-file t t)
+ '(package-archives (quote (("marmalade" . "https://marmalade-repo.org/packages/") ("gnu" . "http://elpa.gnu.org/packages/"))))
+ '(ycmd-extra-conf-handler (quote load)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 (put 'narrow-to-region 'disabled nil)
