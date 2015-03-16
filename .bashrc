@@ -1,4 +1,11 @@
+#!/bin/bash
+
 # User dependent .bashrc file
+
+# Source global definitions
+[ -r /etc/bashrc ] && . /etc/bashrc
+[ -r /etc/bash.bashrc ] && . /etc/bash.bashrc
+[ -r /etc/profile ] && . /etc/profile
 
 umask 0022
 
