@@ -204,48 +204,6 @@ Returns t if the feature was successfully required."
   (interactive)
   (mapcar 'double-entry (read-lines "~/DropBox/TaskTracking/Names.txt")))
 
-(defun list-logs ()
-  "Read in the files in the Work/WorkTracking directory, "
-  (interactive)
-  (setq list (directory-files "~\\Documents\\Work\\WorkTrackingNotes\\"))
-;  (print list)
-  (setq notes nil)
-  (while list
-    (setq head (pop list))
-    (if (>= (length head) 7) 
-	(if (string-equal (substring head -7 nil ) "Log.txt") 
-	    (progn (setq notename head) 
-		   (if (member (list notename notename) notes) nil  
-		     (progn (push (list notename notename) notes))))))
-    )
-  notes
-)
-
-(defun log-name-format (name)
-  "Take a file name and make sure it ends with Log.txt. Add it if it doesn't "
-    (if (and (>= (length name) 7) (string-equal (substring name -7 nil ) "Log.txt"))
-            name ; ends appropriately. Use name
-          (concat name "Log.txt"))       ; doesn't end appropriate. Add Log.txt
-)
-
-(defun process-log (filename note-list)
-  "If the file ends with Log.txt, return it, otherwise return nil"
-  (if (and (>= (length filename) 7) (string-equal (substring filename -7 nil ) "Log.txt"))
-      (nconc note-list (list filename))
-    note-list))
-
-(defun process-logs (file-list note-list)
-  "Take a list of files, and return a not list combining note-list and the notes from the file list"
-  (if (null file-list)
-      note-list
-    (process-logs (cdr file-list) (nconc (list (car file-list)) note-list))))
-
-(defun list-logs2 ()
-  "Read in the files in the Work/WorkTracking directory, "
-  (interactive)
-  (process-logs (directory-files "~\\Documents\\Work\\WorkTrackingNotes\\") nil))
-
-
 (defun readnames ()
   "Read the list of names that we've saved"
   (interactive)
@@ -266,57 +224,6 @@ Returns t if the feature was successfully required."
       lst
       (nconc lst (list item))))
 
-
-(defun list-meetings ()
-  "Read in the files in the Meetings directory, remove the date and
-  txt suffix, and return the resulting unique list"
-  (interactive)
-  (setq lst (directory-files "~\\Documents\\Work\\Meeting Notes\\"))
-;  (print lst)
-  (setq meetings nil)
-  (while lst
-    (setq head (pop lst))
-    (if (>= (length head) 14) 
-	(if (string-equal (substring head -4 nil ) ".txt") 
-	    (progn (setq meetingname (substring head 0 -14)) 
-		   (if (member (list meetingname meetingname) meetings) nil  
-		     (progn (push (list meetingname meetingname) meetings))))))
-    )
-  meetings
-)
-; Now we need to go through the list, parse out the dates.txt part, remove duplicates
-; Could match using regex, but all should need to remove last 14 characters. Should be simpler
-
-(defun log (name)
-  "Open a note file with the correct filename"
-  (interactive (list (completing-read "Log Name: " (list-logs) nil nil nil)))
-  (find-file (concat "~\\Documents\\Work\\WorkTrackingNotes\\" (log-name-format name)))
-  (goto-char (point-max)))
-
-; Take a quick log item. Pick the appropriate file, and then read in
-; from the command line some text to log. Open file, go to end, write
-; text, and close file
-;(defun quicklog (name)
-;  "Quickly log an item to a logfile"
-;  (interactive (list (completing-read "Quick Log Name: " (list-logs) nil nil nil)))
-;  )
-
-(defun meeting (name)
-  "Open a meeting with the correct filename"
-  (interactive (list (completing-read "meeting name: " (list-meetings) nil nil nil)))
-;  (interactive "smeeting name:")
-  (find-file (concat "~\\Documents\\Work\\Meeting Notes\\" name (datestamp) ".txt"))
-  (insert-current-date)
-  (insert "\n"))
-
-
-(defun talk (name)
-  "Open a meeting with the correct filename"
-  (interactive "sTalk Title:")
-  (find-file (concat "~\\Documents\\Work\\Talks-Notes\\" (datestamp) name ".txt"))
-  (insert-current-date)
-  (insert "\n"))
-
 ; Open up the tasks file
 (defun tasks ()
   (interactive)
@@ -326,8 +233,6 @@ Returns t if the feature was successfully required."
 (defun projects ()
   (interactive)
   (find-file "~/DropBox/TaskTracking/projects.txt"))
-
-
 
 ; Add a person to the Names.txt file if they aren't already in there. 
 (defun addperson (name)
@@ -386,67 +291,6 @@ Returns t if the feature was successfully required."
   (fill-paragraph nil)
   (save-buffer)
   (kill-buffer nil))
-
-
-(defun log_inbox (text)
-"Take a note  at the minibuffer and write it to the inbox file"
-  (interactive "snote for Inbox: ")
-  (log_something "~/DropBox/TaskTracking/Inbox.txt" text))
-
-(defun log_idea (text)
-"Take an idea at the minibuffer and write it to the idea file"
-  (interactive "sidea: ")
-  (log_something "~/DropBox/TaskTracking/Ideas.txt" text))
-
-(defun log_reuben (text)
-"Quickly log something about Reuben"
-  (interactive "sReuben note: ")
-  (log_something "~\\Documents\\Personal\\logs\\Reuben.txt" text))
-
-(defun log_shoshana (text)
-"Quickly log something about Shoshana"
-  (interactive "sShoshana note: ")
-  (log_something "~\\Documents\\Personal\\logs\\Shosh.txt" text))
-
-(defun log_orit (text)
-"Quickly log something about Orit and the doctor"
-  (interactive "sOrit note: ")
-  (log_something "~\\Documents\\Personal\\logs\\Orit-doctor.txt" text))
-
-(defun log_nicethings (text)
-"Quickly log something nice someone did for me"
-  (interactive "sNice thing: ")
-  (log_something "~\\Documents\\Personal\\logs\\NiceThings.txt" text))
-
-(defun log_nicethingsme (text)
-"Quickly log something nice I did for someone"
-  (interactive "sNice thing I did: ")
-  (log_something "~\\Documents\\Personal\\logs\\NiceThingsMe.txt" text))
-
-(defun log_frustration (text)
-"Quickly log something frustrating"
-  (interactive "sFrustration: ")
-  (log_something "~\\Documents\\Personal\\logs\\Frustrations.txt" text))
-
-(defun log_observation (text)
-"Quickly log an observation"
-  (interactive "sObservation: ")
-  (log_something "~\\Documents\\Personal\\logs\\Observations.txt" text))
-
-(defun log_person_info (text)
-"Quickly log a note about someone"
-  (interactive "sPerson information: ")
-  (log_something "~\\Documents\\Personal\\logs\\PeopleLog.txt" text))
-
-(defun log_gift_idea (text)
-"Quickly record a gift idea"
-  (interactive "sGift Idea: ")
-  (log_something "~\\Documents\\Personal\\logs\\GiftIdeaLog.txt" text))
-
-(defun log_did_something (text)
-"Quickly record doing something"
-  (interactive "sWhat did I do: ")
-  (log_something "~\\Documents\\Personal\\logs\\DidSomethingLog.txt" text))
 
 
 ;; Dealing with tab and space issues 
@@ -509,19 +353,6 @@ Returns t if the feature was successfully required."
 (global-set-key "\C-cm" 'meeting) 
 (global-set-key "\C-cp" 'person) 
 (global-set-key "\C-cc" 'completed) 
-
-;;; Log keymap entries for my quick logs
-(define-key 'log-keymap "i" 'log_inbox) 
-(define-key 'log-keymap "r" 'log_reuben) 
-(define-key 'log-keymap "s" 'log_shoshana) 
-(define-key 'log-keymap "o" 'log_orit) 
-(define-key 'log-keymap "n" 'log_nicethings) 
-(define-key 'log-keymap "m" 'log_nicethingsme) 
-(define-key 'log-keymap "f" 'log_frustration) 
-(define-key 'log-keymap "b" 'log_observation) 
-(define-key 'log-keymap "p" 'log_person_info)
-(define-key 'log-keymap "g" 'log_gift_idea)
-(define-key 'log-keymap "d" 'log_did_something)
 
 ; turn off word complete in minibuffer completion. Allows spaces
 ;(define-key minibuffer-local-completion-map 'space nil)
