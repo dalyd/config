@@ -13,8 +13,8 @@
 (package-initialize)
 
 ;;; go support
-(add-to-list 'load-path "~/.emacs.d/elpa/go")
-(require 'go-mode-load)
+;(add-to-list 'load-path "~/.emacs.d/elpa/go")
+(require 'go-mode-autoloads)
 
 ;;; Markdown mode support 
 (add-to-list 'load-path "~/.emacs.d/markdown")
