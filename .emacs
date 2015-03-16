@@ -51,7 +51,7 @@
 (autoload 'revbufs "revbufs" "Revert changed buffers." t)
 
 ;; cscope -- not on all machines
-(ignore-errors (require 'xcscope))
+;(ignore-errors (require 'xcscope))
 
 ;; (pymacs-load "bikeemacs" "brm-")
 ;; (brm-init)
