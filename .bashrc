@@ -22,8 +22,8 @@ mkcd ()
 }
 
 ## Set up history 
-# Keep the last 2000 commands in the history
-export HISTSIZE=2000
+# Keep the last 10000 commands in the history
+export HISTSIZE=10000
 # Append to the bash history rather than clearing it
 shopt -s histappend
 # Store multilines as one
