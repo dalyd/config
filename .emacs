@@ -382,3 +382,9 @@ Returns t if the feature was successfully required."
  ;; If there is more than one, they won't work right.
  )
 (put 'narrow-to-region 'disabled nil)
+
+;;; YCMD support 
+;; (add-to-list 'load-path "~/.emacs.d/emacs-ycmd")
+;; (require 'ycmd)
+;; (ycmd-setup)
+;; (set-variable 'ycmd-server-command '("python" "/Users/daviddaly/ycmd/ycmd"))
