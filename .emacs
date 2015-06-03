@@ -151,7 +151,7 @@ Returns t if the feature was successfully required."
 (defun insert-current-date ()
   "Insert the current date in format \"yyyy-mm-dd Full Date string HH:MM:SS\" at point."
   (interactive)
-  (insert (format-time-string "Date: %Y-%m-%d: %A, %B %e %Y %T\n" (current-time)))) 
+  (insert (format-time-string "Date: %Y-%m-%d: %A, %B %e %Y %T\n" (current-time))))
 
 (defun datestamp ()
   "String of the current date in format \"yyyy-mm-dd\" at point for file creation."
@@ -160,21 +160,21 @@ Returns t if the feature was successfully required."
 (defun insert-datestamp ()
   "Insert the current date in format \"yyyy-mm-dd\" at point for file creation."
   (interactive)
-  (insert (format-time-string "%Y-%m-%d" (current-time)))) 
+  (insert (format-time-string "%Y-%m-%d" (current-time))))
 
 
 (defun comment ()
   "Insert a C comment with my initials and today's date at point"
-  (interactive) 
+  (interactive)
   (insert "// David Daly-")
   (insert-datestamp)
   (insert ": ")
 )
 
-(defun insert-current-time () 
-  "Insert the current time in format \"HH:MM:SS\" at point."  
-  (interactive) 
-  (insert (format-time-string "Time: %T" (current-time)))) 
+(defun insert-current-time ()
+  "Insert the current time in format \"HH:MM:SS\" at point."
+  (interactive)
+  (insert (format-time-string "Time: %T" (current-time))))
 
 (defun insert-dashed-line ()
   "Insert a line of dashes at point."
@@ -187,7 +187,7 @@ Returns t if the feature was successfully required."
 
 (defun read-lines (file)
   (interactive)
-  "Return a list of lines in FILE." 
+  "Return a list of lines in FILE."
   (interactive)
   (with-temp-buffer
     (insert-file-contents file)
@@ -297,12 +297,16 @@ Returns t if the feature was successfully required."
   (save-buffer)
   (kill-buffer nil))
 
+;;; formatting options
+; Highlight trailing white space using whitespace package
+(require 'whitespace)
+(setq show-trailing-whitespace t)
+(setq whitespace-line-column 100)
 
 ;; Dealing with tab and space issues 
-;;;; Set C mode offset to 4 spaces for mambo code
 (setq c-default-style "gnu"
           c-basic-offset 4)
-;;;; Don't use tabs
+; Don't use tabs
 (setq-default indent-tabs-mode nil)
 
 ;;; Use aspell
