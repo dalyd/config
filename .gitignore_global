@@ -41,4 +41,7 @@ Thumbs.db
 *.err
 *.pyc
 
+# Other version control
+.svn
+
 cscope.files
