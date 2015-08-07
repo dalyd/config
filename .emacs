@@ -316,6 +316,9 @@ Returns t if the feature was successfully required."
           c-basic-offset 4)
 ; Don't use tabs
 (setq-default indent-tabs-mode nil)
+; apply clang-format on save
+(add-hook 'c++-mode-hook                                                                                        
+  (lambda () (add-hook 'before-save-hook #'clang-format-buffer nil t)))
 
 ;;; Use aspell
 (setq-default ispell-program-name "aspell")
