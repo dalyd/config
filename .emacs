@@ -80,8 +80,8 @@
 
 ;; To enable syntax highlighting by default in all buffers, as well as
 ;; keeping the highlighting up to date as you edit the document.
-;; Thanks to Daniel Pittman <daniel@rimspace.net> for this tip. 
-(setq font-lock-auto-fontify t)  
+;; Thanks to Daniel Pittman <daniel@rimspace.net> for this tip.
+(setq font-lock-auto-fontify t)
 ; Max size of file to highlight. Increasing default value by x100
 (setq font-lock-maximum-size nil)
 
@@ -317,7 +317,7 @@ Returns t if the feature was successfully required."
 ; Don't use tabs
 (setq-default indent-tabs-mode nil)
 ; apply clang-format on save
-(add-hook 'c++-mode-hook                                                                                        
+(add-hook 'c++-mode-hook
   (lambda () (add-hook 'before-save-hook #'clang-format-buffer nil t)))
 
 ;;; Use aspell
@@ -351,7 +351,6 @@ Returns t if the feature was successfully required."
     ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
     (setq comint-eol-on-send t)
     (setq w32-quote-process-args ?\")
-     
     (setq shell-mode-hook 'my-shell-setup)
     )
 
@@ -362,17 +361,17 @@ Returns t if the feature was successfully required."
 
 ;;;; Keybindings
 (global-set-key "\C-co" 'occur)
-(global-set-key "\C-cd" 'insert-current-date) 
-(global-set-key "\C-cs" 'insert-datestamp) 
+(global-set-key "\C-cd" 'insert-current-date)
+(global-set-key "\C-cs" 'insert-datestamp)
 (global-set-key "\C-ct" 'insert-current-time)
 (global-set-key "\C-c-" 'insert-dashed-line)
 (global-set-key "\C-x\C-b" 'ibuffer)
   ;;; keybindings only for windows
 (define-prefix-command 'log-keymap)
 (global-set-key "\C-cl" 'log-keymap)
-(global-set-key "\C-cm" 'meeting) 
-(global-set-key "\C-cp" 'person) 
-(global-set-key "\C-cc" 'completed) 
+(global-set-key "\C-cm" 'meeting)
+(global-set-key "\C-cp" 'person)
+(global-set-key "\C-cc" 'completed)
 
 ; turn off word complete in minibuffer completion. Allows spaces
 ;(define-key minibuffer-local-completion-map 'space nil)
@@ -398,8 +397,12 @@ Returns t if the feature was successfully required."
  )
 (put 'narrow-to-region 'disabled nil)
 
-;;; YCMD support 
+;;; YCMD support
 ;; (add-to-list 'load-path "~/.emacs.d/emacs-ycmd")
 ;; (require 'ycmd)
 ;; (ycmd-setup)
 ;; (set-variable 'ycmd-server-command '("python" "/Users/daviddaly/ycmd/ycmd"))
+
+(add-to-list 'load-path "~/.emacs.d/yaml")
+(require 'yaml-mode)
+    (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
