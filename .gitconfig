@@ -10,3 +10,5 @@
 	smudge = git media smudge %f
 [credential]
 	helper = osxkeychain
+[merge]
+	ff = only
