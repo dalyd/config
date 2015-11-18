@@ -16,7 +16,7 @@
 (package-initialize)
 
 ;;; go support
-;(add-to-list 'load-path "~/.emacs.d/elpa/go")
+(add-to-list 'load-path "~/.emacs.d/elpa/go")
 (require 'go-mode-autoloads)
 
 ;;; Markdown mode support
