@@ -12,6 +12,8 @@ umask 0022
 alias ssh='ssh -A -X' # Enable agent forwarding and X11 forwarding
 
 alias sgrep='find . -regextype posix-extended -regex ".*\.(go|in|h|i|c|cc|cpp|hpp)$" | /usr/bin/xargs grep "$*"'
+# Fix ssh in tmux
+alias fssh='export SSH_AUTH_SOCK=$HOME/.ssh/ssh_auth_sock'
 
 # Move a file and replace original location with symbolic link 
 function lmv(){ [ -e $1 -a -e $2 ] && mv $1 $2 && ln -s $2/$(basename $1) $(dirname $1); }
