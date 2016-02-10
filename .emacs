@@ -316,6 +316,8 @@ Returns t if the feature was successfully required."
           c-basic-offset 4)
 ; Don't use tabs
 (setq-default indent-tabs-mode nil)
+; Put .h files in c++ mode also
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 ; apply clang-format on save
 (add-hook 'c++-mode-hook
   (lambda () (add-hook 'before-save-hook #'clang-format-buffer nil t)))
