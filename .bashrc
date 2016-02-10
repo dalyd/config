@@ -57,9 +57,8 @@ fi
 
 # Go stuff
 if [ -d $HOME/go ]; then
-    export GOROOT=$HOME/go
-    export GOPATH=$GOROOT/bin
-    export PATH=$PATH:$GOPATH
+    export GOPATH=$HOME/go
+    export PATH=$PATH:$GOPATH/bin
 fi
 
 # Set PATH so it includes user's private bin if it exists
