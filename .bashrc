@@ -101,6 +101,9 @@ function ucscope {
 export EDITOR=emacs
 export VISUAL=emacs
 
+### Stuff for GNU Global
+export LESSGLOBALTAGS=global
+
 
 # Local specific commands go in another file
 if [ -e ~/.bash_local ] ; then
