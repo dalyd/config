@@ -18,6 +18,8 @@
 ;;; go support
 (add-to-list 'load-path "~/.emacs.d/elpa/go")
 (require 'go-mode-autoloads)
+(add-hook 'before-save-hook #'gofmt-before-save)
+(require 'golint)
 
 ;;; Markdown mode support
 (add-to-list 'load-path "~/.emacs.d/markdown")
