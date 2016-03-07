@@ -407,6 +407,17 @@ Returns t if the feature was successfully required."
 ;; (ycmd-setup)
 ;; (set-variable 'ycmd-server-command '("python" "/Users/daviddaly/ycmd/ycmd"))
 
+;;; Global support
+(autoload 'gtags-mode "gtags" "" t)
+(setq c-mode-hook
+          '(lambda ()
+              (gtags-mode 1)
+      ))
+(add-hook 'c++-mode-hook
+  '(lambda ()
+    (gtags-mode 1)
+      ))
+
 (add-to-list 'load-path "~/.emacs.d/yaml")
 (require 'yaml-mode)
     (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
