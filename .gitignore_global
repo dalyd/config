@@ -45,3 +45,8 @@ Thumbs.db
 .svn
 
 cscope.files
+
+# Files for GNU Global -- gtags #
+GPATH
+GRTAGS
+GTAGS
