@@ -1,7 +1,14 @@
+;;; .emacs -- My emacs configuration
 ;;; Changes to your init.el file will not take effect until the next
 ;;; time you start up XEmacs, unless you load it explicitly with
 ;;;
 ;;;   M-x load-file RET ~/.xemacs/init.el RET
+;;;
+;;; Commentary:
+;;; Borrowed liberally from other places.  A collection of
+;;; configuration options and shortcuts.
+
+;;; Code:
 
 ;;; Automatically turn on auto fill mode for text mode buffers
 (add-hook 'text-mode-hook 'text-mode-hook-identify)
@@ -31,8 +38,8 @@
 
 ;;; Git support
 (add-to-list 'load-path "~/.emacs.d/git")
-  (require 'git)
-  (require 'git-blame)
+(require 'git)
+(require 'git-blame)
 
 ;;; Make sure autosuggest of keybindings is enabled. Maybe I'll learn something
 (setq suggest-key-bindings t)
@@ -60,7 +67,7 @@
 
 ;;; From Aaron Sawdey to prevent accidental closing
 (defun ask-before-closing ()
-  "Ask whether or not to close, and then close if y was pressed"
+  "Ask whether or not to close, and then close if y was pressed."
   (interactive)
   (if (y-or-n-p (format "Are you sure you want to exit Emacs? "))
       (if (< emacs-major-version 21)
@@ -73,7 +80,7 @@
 
 ;;; Copied from sample.init.el
 (defun Init-safe-require (feat)
-"Try to REQUIRE the specified feature.  Errors occurring are silenced.
+"Try to REQUIRE the specified feature FEAT.  Errors occurring are silenced.
 \(Perhaps in the future there will be a way to get at the error.)
 Returns t if the feature was successfully required."
   (condition-case nil
@@ -141,7 +148,7 @@ Returns t if the feature was successfully required."
 
 
 (defun comment ()
-  "Insert a C comment with my initials and today's date at point"
+  "Insert a C comment with my initials and today's date at point."
   (interactive)
   (insert "// David Daly-")
   (insert-datestamp)
@@ -159,7 +166,7 @@ Returns t if the feature was successfully required."
   (insert "-------------------------------------------------------\n"))
 
 (defun double-entry (var)
-  "If passed var=x, returns (x,x)"
+  "If passed VAR=x, return (x,x)."
   (list var var))
 
 (defun read-lines (file)
@@ -182,12 +189,12 @@ Returns t if the feature was successfully required."
 
 
 (defun list-people ()
-  "Read in TaskTracking/Names.txt to use for completing reads"
+  "Read in TaskTracking/Names.txt to use for completions."
   (interactive)
   (mapcar 'double-entry (read-lines "~/DropBox/TaskTracking/Names.txt")))
 
 (defun readnames ()
-  "Read the list of names that we've saved"
+  "Read the list of names that we've saved."
   (interactive)
 ;  (setq mybuffer (find-file-noselect "~/DropBox/TaskTracking/Names.txt"))
   (goto-char (point-min) (find-file-noselect "~/DropBox/TaskTracking/Names.txt"))
@@ -197,11 +204,11 @@ Returns t if the feature was successfully required."
 )
 
 (defun alist-from-list (lst)
-  "Make a simple alist from a list. car is cdr for each entry"
+  "Make a simple alist from a list LST.  car is cdr for each entry."
   (mapcar #'(lambda (x) (list x x)) lst))
 
 (defun unique-append (item lst)
-  "Added item to list if it isn't already in lst"
+  "Added ITEM to list if it isn't already in LST."
   (if (member item lst)
       lst
       (nconc lst (list item))))
@@ -261,7 +268,7 @@ Returns t if the feature was successfully required."
   (print text))
 
 (defun log_something (file text)
-"Function to quickly log something. Used by topic specific interactive functions"
+"Function to quickly log something.  Used by topic specific interactive functions."
   (find-file file)
   (goto-char (point-max))
   (insert "\n")
@@ -358,3 +365,5 @@ Returns t if the feature was successfully required."
     '(javascript-jshint)))
 ;; use eslint with web-mode for jsx files
 (flycheck-add-mode 'javascript-eslint 'web-mode)
+
+;;; .emacs ends here
