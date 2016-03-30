@@ -425,3 +425,5 @@ Returns t if the feature was successfully required."
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
+
+(add-hook 'after-init-hook #'global-flycheck-mode)
