@@ -68,7 +68,7 @@
         (save-buffers-kill-emacs))
     (message "Canceled exit")))
 
-(when window-system 
+(when window-system
   (global-set-key (kbd "C-x C-c") 'ask-before-closing))
 
 ;;; Copied from sample.init.el
@@ -216,9 +216,9 @@ Returns t if the feature was successfully required."
   (interactive)
   (find-file "~/DropBox/TaskTracking/projects.txt"))
 
-; Add a person to the Names.txt file if they aren't already in there. 
+; Add a person to the Names.txt file if they aren't already in there.
 (defun addperson (name)
-  (if (member name (read-lines "~/DropBox/TaskTracking/Names.txt")) 
+  (if (member name (read-lines "~/DropBox/TaskTracking/Names.txt"))
       nil
     (append-file name "~/DropBox/TaskTracking/Names.txt")))
 
@@ -253,7 +253,7 @@ Returns t if the feature was successfully required."
 ; Simple example of using completion with a prompt. Not useful by itself.
 (defun testcomplete (text)
   (interactive (list (completing-read
-		"Complete a foo: " 
+		"Complete a foo: "
 		'(("foobar1" 1) ("barfoo" 2) ("foobaz" 3) ("foobar2" 4))
 		nil t "fo")))
   (if (stringp text) (print "Text is a tring"))
@@ -280,7 +280,7 @@ Returns t if the feature was successfully required."
 (setq show-trailing-whitespace t)
 (setq whitespace-line-column 100)
 
-;; Dealing with tab and space issues 
+;; Dealing with tab and space issues
 (setq c-default-style "gnu"
           c-basic-offset 4)
 ; Don't use tabs
@@ -352,3 +352,9 @@ Returns t if the feature was successfully required."
 (ac-config-default)
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
+;; disable jshint since we prefer eslint checking
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(javascript-jshint)))
+;; use eslint with web-mode for jsx files
+(flycheck-add-mode 'javascript-eslint 'web-mode)
