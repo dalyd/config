@@ -42,43 +42,11 @@
 (define-key global-map "\C-h" 'backward-delete-char)
 (define-key global-map "\C-x?" 'help-command)
 
-;;;; MUSE and Planner Love Configuration
-(add-to-list 'load-path "~/.xemacs/xemacs-packages/muse/lisp")
-(add-to-list 'load-path "~/.xemacs/xemacs-packages/planner")
-(add-to-list 'load-path "~/.xemacs/xemacs-packages/remember")
-(add-to-list 'load-path "~/.xemacs/xemacs-packages/icicles")
-(add-to-list 'load-path "~/.xemacs/xemacs-packages")
-
-;;; Automatically load matlab mode and the associate functions
-(autoload 'matlab-mode "~/.xemacs/xemacs-packages/matlab.el" "Enter Matlab mode." t)
-(setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
-(autoload 'matlab-shell "~/.xemacs/xemacs-packages/matlab.el" "Interactive Matlab mode." t)
-
 ;;;; enable ibuffer and occur
 (autoload 'ibuffer "ibuffer" "List buffers." t)
 
 ;;;; enable revbufs
 (autoload 'revbufs "revbufs" "Revert changed buffers." t)
-
-;; cscope -- not on all machines
-;(ignore-errors (require 'xcscope))
-
-;; (pymacs-load "bikeemacs" "brm-")
-;; (brm-init)
-
-;(autoload 'python-mode "python-mode" "Python editing mode." t)
-;(setq auto-mode-alist
-;      (cons '("\\.py$" . python-mode) auto-mode-alist))
-
-;; ;;; AUCTex configurations
-;; (ignore-errors
-;;   (load-library "latex.el")
-;;   (require 'tex-site)
-;;   (setq TeX-auto-save t)
-;;   (setq TeX-parse-self t)
-;;   (setq-default TeX-master nil)
-;;   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
-;;   (add-hook 'latex-mode-hook 'turn-on-reftex))   ; with Emacs latex mode
 
 ;; To enable syntax highlighting by default in all buffers, as well as
 ;; keeping the highlighting up to date as you edit the document.
@@ -141,7 +109,6 @@ Returns t if the feature was successfully required."
   (while (search-forward txt nil t)
     (insert (int-to-string la))
     (setq la (1+ la))))
-
 
 
 ;;; Filladapt is a syntax-highlighting package.  When it is enabled it
@@ -331,34 +298,6 @@ Returns t if the feature was successfully required."
 (setq-default completion-ignore-case t)
 
 
-(defun my-shell-setup ()
-  "For Cygwin bash under Emacs 20"
-  (setq comint-scroll-show-maximum-output 'this)
-  (make-variable-buffer-local 'comint-completion-addsuffix))
-
-;; Windows only options
-(when (eq system-type 'windows-nt)
-    ;; Let's use CYGWIN bash...
-    ;;
-    (setenv "PATH" (concat "c:/cygwin/bin;" (getenv "PATH")))
-    (setq exec-path (cons "c:/cygwin/bin/" exec-path))
-    (require 'cygwin-mount)
-    (add-hook 'comint-output-filter-functions
-              'shell-strip-ctrl-m nil t)
-    (add-hook 'comint-output-filter-functions
-              'comint-watch-for-password-prompt nil t)
-    (add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin")
-    (setq-default ispell-program-name "aspell.exe")
-    ;; For subprocesses invoked via the shell
-    ;; (e.g., "shell -c command")
-    (setq comint-completion-addsuffix t)
-    ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
-    (setq comint-eol-on-send t)
-    (setq w32-quote-process-args ?\")
-    (setq shell-mode-hook 'my-shell-setup)
-    )
-
-
 ;;; Find File at Point
 (require 'ffap)
 (ffap-bindings)
@@ -385,20 +324,6 @@ Returns t if the feature was successfully required."
   (unless (fboundp 'declare-function) (defmacro declare-function (&rest r))))
 (global-set-key "\C-x\C-b" 'ibuffer)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(load-home-init-file t t)
- '(package-archives (quote (("marmalade" . "https://marmalade-repo.org/packages/") ("gnu" . "http://elpa.gnu.org/packages/"))))
- '(ycmd-extra-conf-handler (quote load)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 (put 'narrow-to-region 'disabled nil)
 
 ;;; YCMD support
