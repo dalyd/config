@@ -1,0 +1,3 @@
+# SCONS related for building Mongo
+export SCONSFLAGS="-j 6 --cache --disable-warnings-as-errors --ssl CC=/usr/bin/clang CXX=/usr/bin/clang++"
+
