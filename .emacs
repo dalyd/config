@@ -365,5 +365,18 @@ Returns t if the feature was successfully required."
     '(javascript-jshint)))
 ;; use eslint with web-mode for jsx files
 (flycheck-add-mode 'javascript-eslint 'web-mode)
+(add-hook 'c++-mode-hook
+          (lambda () (setq flycheck-gcc-include-path
+                           (list (expand-file-name "/usr/local/include/bsoncxx/v_noabi")))))
+(eval-after-load 'flycheck
+  '(progn
+     (require 'flycheck-google-cpplint)
+     ;; Add Google C++ Style checker.
+     ;; In default, syntax checked by Clang and Cppcheck.
+    (flycheck-add-next-checker 'c/c++-cppcheck
+                                '(warning . c/c++-googlelint))))
 
+(require 'flycheck-color-mode-line)
+(eval-after-load "flycheck"
+  '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
 ;;; .emacs ends here
