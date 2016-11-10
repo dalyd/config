@@ -15,3 +15,4 @@ function tresults {
 
 # code review alias 
 alias cr='python /Users/daviddaly/kernel-tools/codereview/upload.py --check-eslint --server "mongodbcr.appspot.com" -H "mongodbcr.appspot.com" --jira_user david.daly --oauth2 -y \-m'
+alias crnl='python /Users/daviddaly/kernel-tools/codereview/upload.py --server "mongodbcr.appspot.com" -H "mongodbcr.appspot.com" --jira_user david.daly --oauth2 -y \-m'
