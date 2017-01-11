@@ -107,6 +107,11 @@ export VISUAL=emacs
 ### Stuff for GNU Global
 export LESSGLOBALTAGS=global
 
+# Add local python path to PATH
+PYTHON_USER_BIN=$(python -m site --user-base)/bin
+if [ -d $PYTHON_USER_BIN ]; then
+   PATH="${PYTHON_USER_BIN}:${PATH}"
+fi
 
 # Local specific commands go in another file
 if [ -e ~/.bash_local ] ; then
