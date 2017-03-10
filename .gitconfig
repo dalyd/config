@@ -1,14 +1,1 @@
-[user]
-	name = dalyd
-	email = david.daly@mongodb.com
-[core]
-	editor = emacs
-	excludesfile = ~/.gitignore_global
-[filter "media"]
-	required = true
-	clean = git media clean %f
-	smudge = git media smudge %f
-[credential]
-	helper = osxkeychain
-[merge]
-	ff = only
+/Users/daviddaly/config_files/.gitconfig

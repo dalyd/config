@@ -1,4 +1,1 @@
-# Local specific commands go in another file
-if [ -e ~/.bash_local_logout ] ; then
-    . ~/.bash_local_logout
-fi
+/Users/daviddaly/config_files/.bash_logout
