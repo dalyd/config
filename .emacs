@@ -64,6 +64,9 @@
 ;;; Turn on line number mode by default
 (line-number-mode 1)
 
+;;; Set wrapping at 100 columns
+(setq-default fill-column 100)
+
 ;;; From Aaron Sawdey to prevent accidental closing
 (defun ask-before-closing ()
   "Ask whether or not to close, and then close if y was pressed."
