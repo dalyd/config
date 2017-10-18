@@ -360,6 +360,12 @@ Returns t if the feature was successfully required."
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
 
+;;; Yapify and yapf
+(add-to-list 'load-path "~/.emacs.d/yapfify")
+(require 'yapfify)
+(add-hook 'python-mode-hook 'yapf-mode)
+
+
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (require 'flycheck-yamllint)
 (eval-after-load 'flycheck
