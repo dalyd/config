@@ -22,6 +22,7 @@
                          ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 
+
 ;;; go support
 (add-to-list 'load-path "~/.emacs.d/go")
 (add-hook 'before-save-hook #'gofmt-before-save)
@@ -390,4 +391,30 @@ Returns t if the feature was successfully required."
 (require 'flycheck-color-mode-line)
 (eval-after-load "flycheck"
   '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+
+;;; github perma links
+(defun mongo-project-dir (file-path)
+  (concat (substring file-path 0 (string-match "/src/" file-path)) "/"))
+
+(defun parse-this-file (file-path)
+  (substring file-path (+ 5 (string-match "/src/" file-path))))
+
+(defun open-github-at-lines ()
+  (interactive)
+  (let ((default-directory (mongo-project-dir (buffer-file-name)))
+        (file-name (parse-this-file (buffer-file-name)))
+        (line-start (line-number-at-pos (region-beginning)))
+        (line-end (line-number-at-pos (region-end))))
+
+    (set 'git-hash (progn (shell-command "git log -1 --format=format:%h" "*git-hash-output*")
+                          (set-buffer "*git-hash-output*")
+                          (set 'ret (buffer-string))
+                          (kill-buffer "*git-hash-output*")
+                          ret))
+
+    (browse-url (concat "https://github.com/mongodb/mongo/blob/" git-hash
+                        "/src/" file-name
+                        "#L" (number-to-string line-start)
+                        (if (> line-end (+ 1 line-start))
+                            (concat "-L" (number-to-string (- line-end 1))))))))
 ;;; .emacs ends here
