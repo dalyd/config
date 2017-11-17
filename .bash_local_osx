@@ -1,0 +1,22 @@
+
+# Setting PATH for Python 2.7
+# The original version is saved in .bash_profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin:${PATH}"
+export PATH
+
+export JAVA_HOME=$(/usr/libexec/java_home)
+export PATH=$PATH:/usr/local/opt/go/libexec/bin
+
+# aliases for dealing with experimental results
+alias cresults="cd ~/Google\ Drive/experiments/"
+function nresults {
+    mkdir -p ~/Google\ Drive/experiments/$(date +%Y-%m-%d)
+}        
+function tresults {
+    mkdir -p ~/Google\ Drive/experiments/$(date +%Y-%m-%d)
+    cd ~/Google\ Drive/experiments/$(date +%Y-%m-%d)
+}
+
+# code review alias 
+alias cr='python /Users/daviddaly/kernel-tools/codereview/upload.py --check-eslint --server "mongodbcr.appspot.com" -H "mongodbcr.appspot.com" --jira_user david.daly --oauth2 -y \-m'
+alias crnl='python /Users/daviddaly/kernel-tools/codereview/upload.py --server "mongodbcr.appspot.com" -H "mongodbcr.appspot.com" --jira_user david.daly --oauth2 -y \-m'
