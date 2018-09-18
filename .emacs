@@ -336,6 +336,9 @@ Returns t if the feature was successfully required."
 
 (put 'narrow-to-region 'disabled nil)
 
+;;;; UTF-8
+(define-coding-system-alias 'UTF-8 'utf-8)
+
 ;;; YCMD support
 ;; (add-to-list 'load-path "~/.emacs.d/emacs-ycmd")
 ;; (require 'ycmd)
@@ -361,11 +364,20 @@ Returns t if the feature was successfully required."
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
 
+; Python support
 ;;; Yapify and yapf
 (add-to-list 'load-path "~/.emacs.d/yapfify")
 (require 'yapfify)
 (add-hook 'python-mode-hook 'yapf-mode)
 
+;;; sphinx doc mode for python documentation
+(add-hook 'python-mode-hook (lambda ()
+                                  (require 'sphinx-doc)
+                                  (sphinx-doc-mode t)))
+
+;;; Jedi
+;; (add-hook 'python-mode-hook 'jedi:setup)
+;; (setq jedi:complete-on-dot t)                 ; optional
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (require 'flycheck-yamllint)
