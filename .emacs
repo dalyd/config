@@ -23,23 +23,33 @@
 (package-initialize)
 
 
+;;; Package list to install on new machine
+;(package-refresh-contents)
+;(package-install clang-format)
+;(package-install yapfify)
+;(package-install yaml-mode)
+;(package-install sphinx-mode)
+;(package-install projectile)
+;(package-install markdown-mode+)
+;(package-install json-mode)
+;(package-install golint)
+;(package-install go)
+;(package-install flycheck-yamllint)
+;(package-install flycheck)
+;(package-install auto-complete)
+;(package-install magit)
+
 ;;; go support
-(add-to-list 'load-path "~/.emacs.d/go")
+(add-to-list 'load-path (concat (getenv "GOPATH")  "/src/github.com/golang/lint/misc/emacs"))
 (add-hook 'before-save-hook #'gofmt-before-save)
 (require 'golint)
 
 ;;; Markdown mode support
-(add-to-list 'load-path "~/.emacs.d/markdown")
 (autoload 'markdown-mode "markdown-mode"
    "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-
-;;; Git support
-(add-to-list 'load-path "~/.emacs.d/git")
-(require 'git)
-(require 'git-blame)
 
 ;;; Make sure autosuggest of keybindings is enabled. Maybe I'll learn something
 (setq suggest-key-bindings t)
@@ -356,7 +366,6 @@ Returns t if the feature was successfully required."
     (gtags-mode 1)
       ))
 
-(add-to-list 'load-path "~/.emacs.d/yaml")
 (require 'yaml-mode)
     (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
@@ -375,10 +384,6 @@ Returns t if the feature was successfully required."
                                   (require 'sphinx-doc)
                                   (sphinx-doc-mode t)))
 
-;;; Jedi
-;; (add-hook 'python-mode-hook 'jedi:setup)
-;; (setq jedi:complete-on-dot t)                 ; optional
-
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (require 'flycheck-yamllint)
 (eval-after-load 'flycheck
@@ -393,13 +398,13 @@ Returns t if the feature was successfully required."
 (add-hook 'c++-mode-hook
           (lambda () (setq flycheck-gcc-include-path
                            (list (expand-file-name "/usr/local/include/bsoncxx/v_noabi")))))
-(eval-after-load 'flycheck
-  '(progn
-     (require 'flycheck-google-cpplint)
-     ;; Add Google C++ Style checker.
-     ;; In default, syntax checked by Clang and Cppcheck.
-    (flycheck-add-next-checker 'c/c++-cppcheck
-                                '(warning . c/c++-googlelint))))
+;; (eval-after-load 'flycheck
+;;   '(progn
+;;      (require 'flycheck-google-cpplint)
+;;      ;; Add Google C++ Style checker.
+;;      ;; In default, syntax checked by Clang and Cppcheck.
+;;     (flycheck-add-next-checker 'c/c++-cppcheck
+;;                                 '(warning . c/c++-googlelint))))
 (require 'flycheck-color-mode-line)
 (eval-after-load "flycheck"
   '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
@@ -429,4 +434,30 @@ Returns t if the feature was successfully required."
                         "#L" (number-to-string line-start)
                         (if (> line-end (+ 1 line-start))
                             (concat "-L" (number-to-string (- line-end 1))))))))
+
+;;; IDO
+(require 'ido)
+(ido-mode 1)
+
+;;; Projectile
+(require 'projectile)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(projectile-mode +1)
+
 ;;; .emacs ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+
