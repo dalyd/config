@@ -39,6 +39,10 @@
 ;(package-install auto-complete)
 ;(package-install magit)
 
+;;; magit
+(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+
 ;;; go support
 (add-to-list 'load-path (concat (getenv "GOPATH")  "/src/github.com/golang/lint/misc/emacs"))
 (add-hook 'before-save-hook #'gofmt-before-save)
