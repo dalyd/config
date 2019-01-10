@@ -12,3 +12,5 @@
 	helper = osxkeychain
 [merge]
 	ff = only
+[diff]
+        colorMoved = default
