@@ -39,6 +39,10 @@
 ;(package-install auto-complete)
 ;(package-install magit)
 
+;;; cquery
+(require 'cquery)
+(setq cquery-executable "/usr/local/bin/cquery")
+
 ;;; magit
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
@@ -311,6 +315,7 @@ Returns t if the feature was successfully required."
 (setq-default indent-tabs-mode nil)
 ; Put .h files in c++ mode also
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.hh\\'" . c++-mode))
 ; apply clang-format on save
 (add-hook 'c++-mode-hook
   (lambda () (add-hook 'before-save-hook #'clang-format-buffer nil t)))
@@ -456,7 +461,7 @@ Returns t if the feature was successfully required."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
+    (cquery lsp-mode ggtags dash-at-point direx neotree magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
