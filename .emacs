@@ -38,6 +38,7 @@
 ;(package-install flycheck)
 ;(package-install auto-complete)
 ;(package-install magit)
+;(package-install git-gutter)
 
 ;;; cquery
 (require 'cquery)
@@ -46,6 +47,9 @@
 ;;; magit
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+
+;;; git-gutter
+(global-git-gutter-mode +1)
 
 ;;; go support
 (add-to-list 'load-path (concat (getenv "GOPATH")  "/src/github.com/golang/lint/misc/emacs"))
@@ -461,7 +465,7 @@ Returns t if the feature was successfully required."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (cquery lsp-mode ggtags dash-at-point direx neotree magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
+    (git-gutter cquery lsp-mode ggtags dash-at-point direx neotree magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
