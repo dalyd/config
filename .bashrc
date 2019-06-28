@@ -15,8 +15,8 @@ alias sgrep='find . -regextype posix-extended -regex ".*\.(go|in|h|i|c|cc|cpp|hp
 # Fix ssh in tmux
 alias fssh='export SSH_AUTH_SOCK=$HOME/.ssh/ssh_auth_sock'
 
-alias gitbase='git merge-base master head'
-alias gitdiff='git diff $(git merge-base master head)'
+alias gitbase='git merge-base master HEAD'
+alias gitdiff='git diff $(gitbase)'
 
 # Move a file and replace original location with symbolic link 
 function lmv(){ [ -e $1 -a -e $2 ] && mv $1 $2 && ln -s $2/$(basename $1) $(dirname $1); }
