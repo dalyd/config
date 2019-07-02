@@ -39,12 +39,21 @@
 ;(package-install auto-complete)
 ;(package-install magit)
 ;(package-install git-gutter)
+;(package-install fill-column-indicator)
 
-;;; cquery
+;;; cquery and lsp -- semantic parsing of C++ code. Find definitions and calls, etc
+(require 'lsp-mode)
+(add-hook 'c++-mode-hook #'lsp)
 (require 'cquery)
 (setq cquery-executable "/usr/local/bin/cquery")
+(setq cquery-sem-highlight-method 'font-lock)
+;; alternatively, (setq cquery-sem-highlight-method 'overlay)
 
-;;; magit
+;; For rainbow semantic highlighting
+(cquery-use-default-rainbow-sem-highlight)
+
+
+;;; magit: Git porcelain
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
 
@@ -73,22 +82,25 @@
 
 ;;;; enable ibuffer and occur
 (autoload 'ibuffer "ibuffer" "List buffers." t)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-c o") 'occur)
 
 ;;;; enable revbufs
 (autoload 'revbufs "revbufs" "Revert changed buffers." t)
 
-;; To enable syntax highlighting by default in all buffers, as well as
-;; keeping the highlighting up to date as you edit the document.
-;; Thanks to Daniel Pittman <daniel@rimspace.net> for this tip.
-(setq font-lock-auto-fontify t)
-; Max size of file to highlight. Increasing default value by x100
-(setq font-lock-maximum-size nil)
-
-;;; Turn on line number mode by default
+;;; Turn on line and column number mode by default
 (line-number-mode 1)
+(column-number-mode 1)
 
 ;;; Set wrapping at 100 columns
 (setq-default fill-column 100)
+;;; Turn on column line at 100 columns
+(require 'fill-column-indicator)
+(add-hook 'c-mode-hook 'fci-mode)
+(add-hook 'c++-mode-hook 'fci-mode)
+(add-hook 'python-mode-hook 'fci-mode)
+(add-hook 'yaml-mode-hook 'fci-mode)
+(add-hook 'json-mode-hook 'fci-mode)
 
 ;;; From Aaron Sawdey to prevent accidental closing
 (defun ask-before-closing ()
@@ -465,12 +477,10 @@ Returns t if the feature was successfully required."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (git-gutter cquery lsp-mode ggtags dash-at-point direx neotree magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
+    (fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-
