@@ -41,9 +41,25 @@
 ;(package-install git-gutter)
 ;(package-install fill-column-indicator)
 
+;;; IDO
+(require 'ido)
+(ido-mode 1)
+
+;;; Projectile
+(require 'projectile)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(projectile-mode +1)
+(setq projectile-enable-caching t)
+; Switch directly into dired mode when switching projects rather than find file
+(setq projectile-switch-project-action #'projectile-dired)
+(add-hook 'projectile-idle-timer-hook #'my-projectile-idle-timer-function)
+
 ;;; cquery and lsp -- semantic parsing of C++ code. Find definitions and calls, etc
 (require 'lsp-mode)
+(require 'lsp-clients)
 (add-hook 'c++-mode-hook #'lsp)
+(add-hook 'python-mode-hook #'lsp)
+(add-hook 'java-mode-hook #'lsp)
 (require 'cquery)
 (setq cquery-executable "/usr/local/bin/cquery")
 (setq cquery-sem-highlight-method 'font-lock)
@@ -101,6 +117,7 @@
 (add-hook 'python-mode-hook 'fci-mode)
 (add-hook 'yaml-mode-hook 'fci-mode)
 (add-hook 'json-mode-hook 'fci-mode)
+(add-hook 'markdown-mode-hook 'fci-mode)
 
 ;;; From Aaron Sawdey to prevent accidental closing
 (defun ask-before-closing ()
@@ -381,15 +398,15 @@ Returns t if the feature was successfully required."
 ;; (set-variable 'ycmd-server-command '("python" "/Users/daviddaly/ycmd/ycmd"))
 
 ;;; Global support
-(autoload 'gtags-mode "gtags" "" t)
-(setq c-mode-hook
-          '(lambda ()
-              (gtags-mode 1)
-      ))
-(add-hook 'c++-mode-hook
-  '(lambda ()
-    (gtags-mode 1)
-      ))
+;; (autoload 'gtags-mode "gtags" "" t)
+;; (setq c-mode-hook
+;;           '(lambda ()
+;;               (gtags-mode 1)
+;;       ))
+;; (add-hook 'c++-mode-hook
+;;   '(lambda ()
+;;     (gtags-mode 1)
+;;       ))
 
 (require 'yaml-mode)
     (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
@@ -460,14 +477,6 @@ Returns t if the feature was successfully required."
                         (if (> line-end (+ 1 line-start))
                             (concat "-L" (number-to-string (- line-end 1))))))))
 
-;;; IDO
-(require 'ido)
-(ido-mode 1)
-
-;;; Projectile
-(require 'projectile)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-(projectile-mode +1)
 
 ;;; .emacs ends here
 (custom-set-variables
@@ -475,9 +484,10 @@ Returns t if the feature was successfully required."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(column-number-mode t)
  '(package-selected-packages
    (quote
-    (fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
+    (lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
