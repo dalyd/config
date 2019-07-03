@@ -76,6 +76,9 @@
 ;;; git-gutter
 (global-git-gutter-mode +1)
 
+;;; Evergreen support
+(quelpa '(evergreen :repo "chasinglogic/evergreen.el" :fetcher github))
+
 ;;; go support
 (add-to-list 'load-path (concat (getenv "GOPATH")  "/src/github.com/golang/lint/misc/emacs"))
 (add-hook 'before-save-hook #'gofmt-before-save)
@@ -487,7 +490,7 @@ Returns t if the feature was successfully required."
  '(column-number-mode t)
  '(package-selected-packages
    (quote
-    (lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
+    (evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
