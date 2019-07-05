@@ -43,6 +43,10 @@
 
 ;;; IDO
 (require 'ido)
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(setq ido-use-filename-at-point 'guess)
+(setq ido-ignore-extensions t)
 (ido-mode 1)
 
 ;;; Projectile
