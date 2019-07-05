@@ -24,22 +24,33 @@
 
 
 ;;; Package list to install on new machine
-;(package-refresh-contents)
-;(package-install clang-format)
-;(package-install yapfify)
-;(package-install yaml-mode)
-;(package-install sphinx-mode)
-;(package-install projectile)
-;(package-install markdown-mode+)
-;(package-install json-mode)
-;(package-install golint)
-;(package-install go)
-;(package-install flycheck-yamllint)
-;(package-install flycheck)
-;(package-install auto-complete)
-;(package-install magit)
-;(package-install git-gutter)
-;(package-install fill-column-indicator)
+(defun install-my-packages ()
+  "Install all my usual packages. For use on new machine"
+  (interactive)
+  (package-refresh-contents)
+  (package-install clang-format)
+  (package-install company)
+  (package-install cquery)
+  (package-install elpy)
+  (package-install evergreen)
+  (package-install fill-column-indicator)
+  (package-install flx-ido)
+  (package-install git-gutter)
+  (package-install go)
+  (package-install golint)
+  (package-install flycheck)
+  (package-install flycheck-pycheckers)
+  (package-install flycheck-yamllint)
+  (package-install json-mode)
+  (package-install lsp-mode)
+  (package-install magit)
+  (package-install markdown-mode+)
+  (package-install projectile)
+  (package-install quelpa)
+  (package-install sphinx-mode)
+  (package-install yaml-mode)
+  (package-install yapfify)
+  )
 
 ;;; IDO
 (require 'ido)
@@ -502,7 +513,7 @@ Returns t if the feature was successfully required."
  '(column-number-mode t)
  '(package-selected-packages
    (quote
-    (evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree magit clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
+    (magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
