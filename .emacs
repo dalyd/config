@@ -30,6 +30,7 @@
   (package-refresh-contents)
   (package-install 'clang-format)
   (package-install 'company)
+  (package-install 'company-lsp)
   (package-install 'cquery)
   (package-install 'elpy)
   (package-install 'fill-column-indicator)
@@ -71,6 +72,8 @@
 (add-hook 'projectile-idle-timer-hook #'my-projectile-idle-timer-function)
 
 ;;; cquery and lsp -- semantic parsing of C++ code. Find definitions and calls, etc
+(require 'lsp-ui)
+(add-hook 'lsp-mode-hook 'lsp-ui-mode)
 (require 'lsp-mode)
 (require 'lsp-clients)
 (add-hook 'c++-mode-hook #'lsp)
@@ -80,6 +83,9 @@
 (setq cquery-executable "/usr/local/bin/cquery")
 (setq cquery-sem-highlight-method 'font-lock)
 ;; alternatively, (setq cquery-sem-highlight-method 'overlay)
+
+(require 'company-lsp)
+(push 'company-lsp company-backends)
 
 ;; For rainbow semantic highlighting
 (cquery-use-default-rainbow-sem-highlight)
@@ -507,11 +513,13 @@ Returns t if the feature was successfully required."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(column-number-mode t)
- '(custom-enabled-themes (quote (manoj-dark)))
+ '(custom-enabled-themes (quote (wheatgrass)))
  '(package-selected-packages
    (quote
-    (magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
+    (company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
