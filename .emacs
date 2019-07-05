@@ -32,13 +32,13 @@
   (package-install 'company)
   (package-install 'cquery)
   (package-install 'elpy)
-  (package-install 'evergreen)
   (package-install 'fill-column-indicator)
   (package-install 'flx-ido)
   (package-install 'git-gutter)
   (package-install 'go)
   (package-install 'golint)
   (package-install 'flycheck)
+  (package-install 'flycheck-color-mode-line)
   (package-install 'flycheck-pycheckers)
   (package-install 'flycheck-yamllint)
   (package-install 'json-mode)
@@ -50,6 +50,7 @@
   (package-install 'sphinx-mode)
   (package-install 'yaml-mode)
   (package-install 'yapfify)
+  (quelpa '(evergreen :repo "chasinglogic/evergreen.el" :fetcher github))
   )
 
 ;;; IDO
@@ -436,10 +437,6 @@ Returns t if the feature was successfully required."
 
 (require 'yaml-mode)
     (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(ac-config-default)
 
 ; Python support
 ;;; Yapify and yapf
