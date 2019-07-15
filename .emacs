@@ -33,8 +33,8 @@
   (package-install 'company-lsp)
   (package-install 'cquery)
   (package-install 'elpy)
+  (package-install 'exec-path-from-shell)
   (package-install 'fill-column-indicator)
-  (package-install 'flx-ido)
   (package-install 'git-gutter)
   (package-install 'go)
   (package-install 'golint)
@@ -49,46 +49,58 @@
   (package-install 'projectile)
   (package-install 'quelpa)
   (package-install 'sphinx-mode)
+  (package-install 'which-key)
   (package-install 'yaml-mode)
   (package-install 'yapfify)
   (quelpa '(evergreen :repo "chasinglogic/evergreen.el" :fetcher github))
   )
-
-;;; IDO
-(require 'ido)
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(setq ido-use-filename-at-point 'guess)
-(setq ido-ignore-extensions t)
-(ido-mode 1)
 
 ;;; Projectile
 (require 'projectile)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 (projectile-mode +1)
 (setq projectile-enable-caching t)
+; Use Hybrid indexing using find and git
+(setq projectile-indexing-method 'hybrid)
 ; Switch directly into dired mode when switching projects rather than find file
 (setq projectile-switch-project-action #'projectile-dired)
 (add-hook 'projectile-idle-timer-hook #'my-projectile-idle-timer-function)
 
 ;;; cquery and lsp -- semantic parsing of C++ code. Find definitions and calls, etc
+;; I think lsp-ui was causing instability with Genny
 (require 'lsp-ui)
 (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+(setq-default
+   lsp-ui-imenu-enable nil
+   lsp-ui-flycheck-enable t)
 (require 'lsp-mode)
 (require 'lsp-clients)
 (add-hook 'c++-mode-hook #'lsp)
 (add-hook 'python-mode-hook #'lsp)
 (add-hook 'java-mode-hook #'lsp)
-(require 'cquery)
-(setq cquery-executable "/usr/local/bin/cquery")
-(setq cquery-sem-highlight-method 'font-lock)
-;; alternatively, (setq cquery-sem-highlight-method 'overlay)
+(require 'ccls)
+(setq ccls-executable "/usr/local/bin/ccls")
+;; (require 'cquery)
+;; (setq cquery-executable "/usr/local/bin/cquery")
+;; (setq cquery-sem-highlight-method 'font-lock)
+(setq-default
+   lsp-prefer-flymake nil
+   lsp-auto-guess-root t)
+
+(require 'company)
+(setq-default
+ ;; Shorten the default delay to show completions
+ company-idle-delay 0.1
+ ;; Keep capitalization when completing
+ company-dabbrev-downcase nil)
+;; Enable completion everywhere
+(global-company-mode)
 
 (require 'company-lsp)
 (push 'company-lsp company-backends)
 
 ;; For rainbow semantic highlighting
-(cquery-use-default-rainbow-sem-highlight)
+;; (cquery-use-default-rainbow-sem-highlight)
 
 
 ;;; magit: Git porcelain
@@ -121,6 +133,14 @@
     (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
     (add-hook 'elpy-mode-hook 'flycheck-mode))
 
+(setq python-shell-interpreter "python"
+      python-shell-interpreter-args "-i")
+(setq python-shell-interpreter "jupyter"
+      python-shell-interpreter-args "console --simple-prompt"
+      python-shell-prompt-detect-failure-warning nil)
+(add-to-list 'python-shell-completion-native-disabled-interpreters
+             "jupyter")
+
 ;;; Make sure autosuggest of keybindings is enabled. Maybe I'll learn something
 (setq suggest-key-bindings t)
 
@@ -151,6 +171,28 @@
 (add-hook 'yaml-mode-hook 'fci-mode)
 (add-hook 'json-mode-hook 'fci-mode)
 (add-hook 'markdown-mode-hook 'fci-mode)
+
+;;;; Stuff copied from Mathew Robinson's .emacs, and not otherwise integrated into this file
+;;; Copy shell paths over.
+(require 'exec-path-from-shell)
+(exec-path-from-shell-initialize)
+
+(require 'all-the-icons)
+(require 'doom-modeline)
+(doom-modeline-mode 1)
+
+;;; Which key mode: Show help on potential completions for key sequence
+(require 'which-key)
+(which-key-mode)
+
+;;; Matched delimiters
+(electric-pair-mode 1)
+(electric-indent-mode 1)
+
+;;; Ivy
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq enable-recursive-minibuffers t)
 
 ;;; From Aaron Sawdey to prevent accidental closing
 (defun ask-before-closing ()
@@ -392,11 +434,6 @@ Returns t if the feature was successfully required."
 ;;;; Use case insensitive file completion
 (setq-default completion-ignore-case t)
 
-
-;;; Find File at Point
-(require 'ffap)
-(ffap-bindings)
-
 ;;;; Keybindings
 (global-set-key "\C-co" 'occur)
 (global-set-key "\C-cd" 'insert-current-date)
@@ -517,9 +554,13 @@ Returns t if the feature was successfully required."
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(column-number-mode t)
  '(custom-enabled-themes (quote (wheatgrass)))
+ '(custom-safe-themes
+   (quote
+    ("80365dd15f97396bdc38490390c23337063c8965c4556b8f50937e63b5e9a65c" "10461a3c8ca61c52dfbbdedd974319b7f7fd720b091996481c8fb1dded6c6116" default)))
  '(package-selected-packages
    (quote
-    (company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete))))
+    (counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
+ '(which-key-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
