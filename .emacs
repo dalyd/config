@@ -70,7 +70,6 @@
   projectile-indexing-method 'hybrid
   projectile-enable-caching t
   projectile-switch-project-action #'projectile-dired)
-  (add-hook 'projectile-idle-timer-hook #'my-projectile-idle-timer-function)
   (projectile-mode +1)
   :bind-keymap
   ("C-c p" . projectile-command-map)
@@ -234,7 +233,7 @@ Returns t if the feature was successfully required."
 
 (defun truncon ()
   (interactive)
-  (Setq truncate-lines t)
+  (setq truncate-lines t)
 )
 
 (defun truncoff ()
@@ -309,7 +308,6 @@ Returns t if the feature was successfully required."
   (list var var))
 
 (defun read-lines (file)
-  (interactive)
   "Return a list of lines in FILE."
   (interactive)
   (with-temp-buffer
@@ -324,23 +322,6 @@ Returns t if the feature was successfully required."
   (insert "\n")
  (save-buffer)
  (kill-buffer nil))
-
-
-
-(defun list-people ()
-  "Read in TaskTracking/Names.txt to use for completions."
-  (interactive)
-  (mapcar 'double-entry (read-lines "~/DropBox/TaskTracking/Names.txt")))
-
-(defun readnames ()
-  "Read the list of names that we've saved."
-  (interactive)
-;  (setq mybuffer (find-file-noselect "~/DropBox/TaskTracking/Names.txt"))
-  (goto-char (point-min) (find-file-noselect "~/DropBox/TaskTracking/Names.txt"))
-  (setq names (read (find-file-noselect "~/DropBox/TaskTracking/Names.txt")))
-  (kill-buffer (find-file-noselect "~/DropBox/TaskTracking/Names.txt"))
-  names
-)
 
 (defun alist-from-list (lst)
   "Make a simple alist from a list LST.  car is cdr for each entry."
@@ -361,23 +342,6 @@ Returns t if the feature was successfully required."
 (defun projects ()
   (interactive)
   (find-file "~/DropBox/TaskTracking/projects.txt"))
-
-; Add a person to the Names.txt file if they aren't already in there.
-(defun addperson (name)
-  (if (member name (read-lines "~/DropBox/TaskTracking/Names.txt"))
-      nil
-    (append-file name "~/DropBox/TaskTracking/Names.txt")))
-
-; Add a person the people file
-(define-key minibuffer-local-completion-map
-             " " 'self-insert-command)
- (define-key minibuffer-local-must-match-map
-             " " 'self-insert-command)
-(defun person (name)
-  (interactive (list (completing-read "Person's Name: " (list-people) nil nil nil)))
-  (append-file (concat (datestamp) " " name) "~/DropBox/TaskTracking/People.txt")
-  (addperson name))
-
 
 ; Mark a task as completed. Delete from Task file and move to Completed Tasks with timestamp
 (defun completed ()
@@ -407,7 +371,7 @@ Returns t if the feature was successfully required."
   (print text))
 
 (defun log_something (file text)
-"Function to quickly log something.  Used by topic specific interactive functions."
+"Function to quickly log TEXT to FILE.  Used by topic specific interactive functions."
   (find-file file)
   (goto-char (point-max))
   (insert "\n")
@@ -508,33 +472,6 @@ Returns t if the feature was successfully required."
 (require 'flycheck-color-mode-line)
 (eval-after-load "flycheck"
   '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
-
-;;; github perma links
-(defun mongo-project-dir (file-path)
-  (concat (substring file-path 0 (string-match "/src/" file-path)) "/"))
-
-(defun parse-this-file (file-path)
-  (substring file-path (+ 5 (string-match "/src/" file-path))))
-
-(defun open-github-at-lines ()
-  (interactive)
-  (let ((default-directory (mongo-project-dir (buffer-file-name)))
-        (file-name (parse-this-file (buffer-file-name)))
-        (line-start (line-number-at-pos (region-beginning)))
-        (line-end (line-number-at-pos (region-end))))
-
-    (set 'git-hash (progn (shell-command "git log -1 --format=format:%h" "*git-hash-output*")
-                          (set-buffer "*git-hash-output*")
-                          (set 'ret (buffer-string))
-                          (kill-buffer "*git-hash-output*")
-                          ret))
-
-    (browse-url (concat "https://github.com/mongodb/mongo/blob/" git-hash
-                        "/src/" file-name
-                        "#L" (number-to-string line-start)
-                        (if (> line-end (+ 1 line-start))
-                            (concat "-L" (number-to-string (- line-end 1))))))))
-
 
 ;;; .emacs ends here
 (custom-set-variables
