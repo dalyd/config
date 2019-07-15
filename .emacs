@@ -21,7 +21,9 @@
                          ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
-
+(when (not (package-installed-p 'use-package))
+  (package-refresh-contents)
+  (package-install 'use-package))
 
 ;;; Package list to install on new machine
 (defun install-my-packages ()
@@ -56,15 +58,26 @@
   )
 
 ;;; Projectile
-(require 'projectile)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-(projectile-mode +1)
-(setq projectile-enable-caching t)
+(use-package projectile
+  :ensure t
+  :commands (projectile-switch-project
+             projectile-find-file
+             projectile-project-root
+             projectile-project-name)
+  :config
+  (setq-default
+  projectile-completion-system 'ivy
+  projectile-indexing-method 'hybrid
+  projectile-enable-caching t
+  projectile-switch-project-action #'projectile-dired)
+  (add-hook 'projectile-idle-timer-hook #'my-projectile-idle-timer-function)
+  (projectile-mode +1)
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+)
+
 ; Use Hybrid indexing using find and git
-(setq projectile-indexing-method 'hybrid)
 ; Switch directly into dired mode when switching projects rather than find file
-(setq projectile-switch-project-action #'projectile-dired)
-(add-hook 'projectile-idle-timer-hook #'my-projectile-idle-timer-function)
 
 ;;; cquery and lsp -- semantic parsing of C++ code. Find definitions and calls, etc
 ;; I think lsp-ui was causing instability with Genny
@@ -80,9 +93,6 @@
 (add-hook 'java-mode-hook #'lsp)
 (require 'ccls)
 (setq ccls-executable "/usr/local/bin/ccls")
-;; (require 'cquery)
-;; (setq cquery-executable "/usr/local/bin/cquery")
-;; (setq cquery-sem-highlight-method 'font-lock)
 (setq-default
    lsp-prefer-flymake nil
    lsp-auto-guess-root t)
@@ -445,7 +455,6 @@ Returns t if the feature was successfully required."
 (define-prefix-command 'log-keymap)
 (global-set-key "\C-cl" 'log-keymap)
 (global-set-key "\C-cm" 'meeting)
-(global-set-key "\C-cp" 'person)
 (global-set-key "\C-cc" 'completed)
 
 ; turn off word complete in minibuffer completion. Allows spaces
@@ -460,23 +469,6 @@ Returns t if the feature was successfully required."
 
 ;;;; UTF-8
 (define-coding-system-alias 'UTF-8 'utf-8)
-
-;;; YCMD support
-;; (add-to-list 'load-path "~/.emacs.d/emacs-ycmd")
-;; (require 'ycmd)
-;; (ycmd-setup)
-;; (set-variable 'ycmd-server-command '("python" "/Users/daviddaly/ycmd/ycmd"))
-
-;;; Global support
-;; (autoload 'gtags-mode "gtags" "" t)
-;; (setq c-mode-hook
-;;           '(lambda ()
-;;               (gtags-mode 1)
-;;       ))
-;; (add-hook 'c++-mode-hook
-;;   '(lambda ()
-;;     (gtags-mode 1)
-;;       ))
 
 (require 'yaml-mode)
     (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
@@ -559,7 +551,7 @@ Returns t if the feature was successfully required."
     ("80365dd15f97396bdc38490390c23337063c8965c4556b8f50937e63b5e9a65c" "10461a3c8ca61c52dfbbdedd974319b7f7fd720b091996481c8fb1dded6c6116" default)))
  '(package-selected-packages
    (quote
-    (counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
+    (use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
  '(which-key-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
