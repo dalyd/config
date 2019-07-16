@@ -11,7 +11,6 @@ umask 0022
 
 alias ssh='ssh -A -YC' # Enable agent forwarding and X11 forwarding
 
-alias sgrep='find . -regextype posix-extended -regex ".*\.(go|in|h|i|c|cc|cpp|hpp)$" | /usr/bin/xargs grep "$*"'
 # Fix ssh in tmux
 alias fssh='export SSH_AUTH_SOCK=$HOME/.ssh/ssh_auth_sock'
 
@@ -19,17 +18,18 @@ alias gitbase='git merge-base master HEAD'
 alias gitdiff='git diff $(gitbase)'
 
 # Move a file and replace original location with symbolic link 
-function lmv(){ [ -e $1 -a -e $2 ] && mv $1 $2 && ln -s $2/$(basename $1) $(dirname $1); }
+function lmv(){ [ -e "$1" ] && [ -e "$2" ] && mv "$1" "$2" && ln -s "$2" $"(basename $1)" $"(dirname $1)"; }
 
 #alias ls='ls -B --color=tty'
 # make a directory and cd into it
 mkcd () 
 { 
-    mkdir -p $1 && cd $1
+    mkdir -p "$1" && cd "$1" || exit
 }
 
-if [ -f ~/bin/git-completion.bash ]; then
-  source ~/bin/git-completion.bash
+# shellcheck source=/USERS/daviddaly/bin/git-completion.bash
+if [ -f "${HOME}"/bin/git-completion.bash ]; then
+  source "${HOME}"/bin/git-completion.bash
 fi
 
 ## Set up history 
@@ -52,30 +52,31 @@ shopt -s checkwinsize
 shopt -s extglob
 
 # EC2 CLI stuff
-if [ -e ~/usr/local/ec2/ec2-api-tools-1.7.1.0 ]; then
+if [ -e "${HOME}"/usr/local/ec2/ec2-api-tools-1.7.1.0 ]; then
     export EC2_HOME=/usr/local/ec2/ec2-api-tools-1.7.1.0
     export PATH=$PATH:$EC2_HOME/bin 
 fi
 
-if [ -e ~/.aws_settings ] ; then
-    . ~/.aws_settings
+# shellcheck source=/dev/null
+if [ -e "${HOME}"/.aws_settings ] ; then
+    . "${HOME}"/.aws_settings
 fi
 
 
 # Go stuff
-if [ -d $HOME/go ]; then
+if [ -d "${HOME}"/go ]; then
     export GOPATH=$HOME/go
     export PATH=$PATH:$GOPATH/bin
 fi
 
 # Set PATH so it includes user's private bin if it exists
-if [ -d ~/bin ] ; then
-   export PATH="~/bin:${PATH}"
+if [ -d "${HOME}"/bin ] ; then
+   export PATH="${HOME}/bin:${PATH}"
  fi
 
 # Set PATH so it includes user's private bin if it exists
- if [ -d ~/scripts ] ; then
-   export PATH="~/scripts:${PATH}"
+ if [ -d "${HOME}"/scripts ] ; then
+   export PATH="${HOME}/scripts:${PATH}"
  fi
 
 if [ -d /opt/local/bin ] ; then 
@@ -93,18 +94,6 @@ fi
      INFOPATH="${INFOPATH}:/usr/gnu/info"
  fi
 
-
-function ucscope {
-    # Update cscope for mambo directories
-    find . -name "cscope*" | xargs rm 
-    find .  -name "*.[cChH]" > cscope.files
-    find .  -name "*.cc" >> cscope.files
-    find .  -name "*.cpp" >> cscope.files
-    find .  -name "*.hpp" >> cscope.files
-    find .  -name "*.js" >> cscope.files
-    cscope -b -q -k
-}
-
 export EDITOR=emacs
 export VISUAL=emacs
 
@@ -113,16 +102,19 @@ export LESSGLOBALTAGS=global
 
 # Add local python path to PATH
 PYTHON_USER_BIN=$(python -m site --user-base)/bin
-if [ -d $PYTHON_USER_BIN ]; then
+if [ -d "$PYTHON_USER_BIN" ]; then
    PATH="${PYTHON_USER_BIN}:${PATH}"
 fi
 
 # Local specific commands go in another file
-if [ -e ~/.bash_local ] ; then
-    . ~/.bash_local
+# shellcheck source=/dev/null
+if [ -e "${HOME}"/.bash_local ] ; then
+    . "${HOME}"/.bash_local
 fi
 
 
 export NVM_DIR="$HOME/.nvm"
+# Shellcheck source=/dev/null
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# Shellcheck source=/dev/null
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
