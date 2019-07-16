@@ -25,38 +25,6 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;;; Package list to install on new machine
-(defun install-my-packages ()
-  "Install all my usual packages.  For use on new machine."
-  (interactive)
-  (package-refresh-contents)
-  (package-install 'clang-format)
-  (package-install 'company)
-  (package-install 'company-lsp)
-  (package-install 'cquery)
-  (package-install 'elpy)
-  (package-install 'exec-path-from-shell)
-  (package-install 'fill-column-indicator)
-  (package-install 'git-gutter)
-  (package-install 'go)
-  (package-install 'golint)
-  (package-install 'flycheck)
-  (package-install 'flycheck-color-mode-line)
-  (package-install 'flycheck-pycheckers)
-  (package-install 'flycheck-yamllint)
-  (package-install 'json-mode)
-  (package-install 'lsp-mode)
-  (package-install 'magit)
-  (package-install 'markdown-mode+)
-  (package-install 'projectile)
-  (package-install 'quelpa)
-  (package-install 'sphinx-mode)
-  (package-install 'which-key)
-  (package-install 'yaml-mode)
-  (package-install 'yapfify)
-  (quelpa '(evergreen :repo "chasinglogic/evergreen.el" :fetcher github))
-  )
-
 (use-package diminish
   :ensure t
   :commands 'diminish)
@@ -104,6 +72,8 @@
   (setq-default lsp-ui-imenu-enable nil
                 lsp-ui-flycheck-enable t))
 
+(use-package yasnippet)
+
 (use-package company-lsp
   :commands company-lsp
   :after (lsp-mode company)
@@ -129,25 +99,69 @@
 
 
 ;;;; ELPY Python support -- not LSP based
-(use-package elpy
-  :ensure t
-  :init
-  (elpy-enable)
-  :config
-  ; disable flymake and use flycheck if if exists
-  (when (require 'flycheck nil t)
-    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-    (add-hook 'elpy-mode-hook 'flycheck-mode))
-  (setq python-shell-interpreter "jupyter"
-      python-shell-interpreter-args "console --simple-prompt"
-      python-shell-prompt-detect-failure-warning nil)
-  (add-to-list 'python-shell-completion-native-disabled-interpreters
-             "jupyter")
-  )
+;; (use-package elpy
+;;   :ensure t
+;;   :init
+;;   (elpy-enable)
+;;   :config
+;;   ; disable flymake and use flycheck if if exists
+;;   (when (require 'flycheck nil t)
+;;     (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+;;     (add-hook 'elpy-mode-hook 'flycheck-mode))
+;;   (setq python-shell-interpreter "jupyter"
+;;       python-shell-interpreter-args "console --simple-prompt"
+;;       python-shell-prompt-detect-failure-warning nil)
+;;   (add-to-list 'python-shell-completion-native-disabled-interpreters
+;;              "jupyter")
+;;   )
 
 
 ;;;;; END IDE related
 
+;;;;; Formatting and flycheck packages
+;;; Yapify and yapf
+(use-package yapfify
+  :commands yapf-mode
+  :hook (python-mode . yapf-mode))
+
+;;; sphinx doc mode for python documentation
+(use-package sphinx-doc
+  :commands sphinx-doc-mode
+  :hook (python-mode . sphinx-doc-mode))
+
+(use-package flycheck
+  :init (global-flycheck-mode)
+  :config (setq-default flycheck-disabled-checkers
+                        (append flycheck-disabled-checkers
+                                '(javascript-jshint)
+                                '(python-flake8)))
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+)
+
+(use-package flycheck-yamllint
+  :after flycheck
+  :commands flycheck-yamllint-setup
+  :hook (flycheck-mode . flycheck-yamllint-setup))
+
+;; disable jshint since we prefer eslint checking
+;; use eslint with web-mode for jsx files
+(add-hook 'c++-mode-hook
+          (lambda () (setq flycheck-gcc-include-path
+                           (list (expand-file-name "/usr/local/include/bsoncxx/v_noabi")))))
+;; (eval-after-load 'flycheck
+;;   '(progn
+;;      (require 'flycheck-google-cpplint)
+;;      ;; Add Google C++ Style checker.
+;;      ;; In default, syntax checked by Clang and Cppcheck.
+;;     (flycheck-add-next-checker 'c/c++-cppcheck
+;;                                 '(warning . c/c++-googlelint))))
+(use-package flycheck-color-mode-line
+  :after flycheck
+  :hook (flycheck-mode . flycheck-color-mode-line-mode)
+  :commands flycheck-color-mode-line-mode
+  )
+
+;;;; END Formatting and flycheck packages
 
 ;;; magit: Git porcelain
 (use-package magit
@@ -170,64 +184,146 @@
 (require 'golint)
 
 ;;; Markdown mode support
-(autoload 'markdown-mode "markdown-mode"
-   "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(use-package markdown-mode
+  :commands (gfm-mode
+             markdown-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
 
-;;; Make sure autosuggest of keybindings is enabled. Maybe I'll learn something
-(setq suggest-key-bindings t)
 
-;;; Key rebindings
-; Remap \C-h to backspace and Help to \C-x?"
-(define-key global-map "\C-h" 'backward-delete-char)
-(define-key global-map "\C-x?" 'help-command)
+
+(use-package yaml-mode
+  :mode ("\\.yml$" . yaml-mode))
 
 ;;;; enable ibuffer and occur
-(autoload 'ibuffer "ibuffer" "List buffers." t)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-c o") 'occur)
+(use-package ibuffer
+  :bind
+  ("C-x C-b" . ibuffer)
+  ("C-c o" . occur)
+  )
 
-;;;; enable revbufs
-(autoload 'revbufs "revbufs" "Revert changed buffers." t)
 
+;; Turn on column line at 100 columns
+(use-package fill-column-indicator
+  :init
+  (setq-default fill-column 100)
+  :hook
+  ((c-mode
+    c++-mode
+    python-mode
+    yaml-mode
+    json-mode
+    markdown-mode) . fci-mode)
+  :commands fci-mode
+  )
+
+;; Get the path we would have in a terminal
+(use-package exec-path-from-shell
+  :config (exec-path-from-shell-initialize))
+
+;; pretty modeline
+(use-package all-the-icons)
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+
+;; suggest completions. Show help on potential completions for key sequence
+
+(use-package which-key
+  :diminish ""
+  :config
+  (which-key-mode))
+
+;;; Filladapt is a syntax-highlighting package.  When it is enabled it
+;;; makes filling (e.g. using M-q) much much smarter about paragraphs
+;;; that are indented and/or are set off with semicolons, dashes, etc.
+
+(use-package filladapt
+  :init
+  (setq-default filladapt-mode t)
+  :hook
+  (c-mode . turn-off-filladapt-mode)
+  (c++-mode . turn-off-filladapt-mode)
+  (outline-mode-hook . turn-off-filladapt-mode))
+
+(use-package ivy
+  :diminish ""
+  :init
+  (setq
+   enable-recursive-minibuffers t
+   ivy-use-virtual-buffers t)
+  (ivy-mode 1)
+  :bind
+  ("C-s" . swiper)
+  ("M-x" . counsel-M-x)
+  ("C-x C-f" . counsel-find-file)
+  ("<f1> f" . counsel-describe-function)
+  ("<f1> v" . counsel-describe-variable)
+  ("<f1> l" . counsel-find-library)
+  ("<f2> i" . counsel-info-lookup-symbol)
+  ("<f2> u" . counsel-unicode-char)
+  )
+
+(use-package smex :after 'counsel)
+(use-package counsel
+  :commands (
+             ;; Auto loaded by projectile on use.
+             counsel-ag
+             counsel-rg)
+)
+
+; Highlight trailing white space using whitespace package
+(use-package whitespace
+  :init
+  (setq show-trailing-whitespace t)
+  (setq whitespace-line-column 100)
+  :commands
+  whitespace-mode
+)
+
+(use-package sphinx-doc)
+
+;;;; General Emacs configuration
+;;; Make sure autosuggest of keybindings is enabled. Maybe I'll learn something
+(setq suggest-key-bindings t)
 ;;; Turn on line and column number mode by default
 (line-number-mode 1)
 (column-number-mode 1)
-
-;;; Set wrapping at 100 columns
-(setq-default fill-column 100)
-;;; Turn on column line at 100 columns
-(require 'fill-column-indicator)
-(add-hook 'c-mode-hook 'fci-mode)
-(add-hook 'c++-mode-hook 'fci-mode)
-(add-hook 'python-mode-hook 'fci-mode)
-(add-hook 'yaml-mode-hook 'fci-mode)
-(add-hook 'json-mode-hook 'fci-mode)
-(add-hook 'markdown-mode-hook 'fci-mode)
-
-;;;; Stuff copied from Mathew Robinson's .emacs, and not otherwise integrated into this file
-;;; Copy shell paths over.
-(require 'exec-path-from-shell)
-(exec-path-from-shell-initialize)
-
-(require 'all-the-icons)
-(require 'doom-modeline)
-(doom-modeline-mode 1)
-
-;;; Which key mode: Show help on potential completions for key sequence
-(require 'which-key)
-(which-key-mode)
 
 ;;; Matched delimiters
 (electric-pair-mode 1)
 (electric-indent-mode 1)
 
-;;; Ivy
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq enable-recursive-minibuffers t)
+;;; Key rebindings
+; Remap Help to \C-x?"
+(define-key global-map "\C-x?" 'help-command)
+
+;;; formatting options
+;; Dealing with tab and space issues
+(setq c-default-style "gnu"
+          c-basic-offset 4)
+; Don't use tabs
+(setq-default indent-tabs-mode nil)
+; Put .h files in c++ mode also
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.hh\\'" . c++-mode))
+; apply clang-format on save
+(add-hook 'c++-mode-hook
+  (lambda () (add-hook 'before-save-hook #'clang-format-buffer nil t)))
+
+;;; Use aspell
+(setq-default ispell-program-name "aspell")
+
+;;;; Use case insensitive file completion
+(setq-default completion-ignore-case t)
+
+(put 'narrow-to-region 'disabled nil)
+;;;; UTF-8
+(define-coding-system-alias 'UTF-8 'utf-8)
+
+;;;; My functions, etc
 
 ;;; From Aaron Sawdey to prevent accidental closing
 (defun ask-before-closing ()
@@ -241,15 +337,6 @@
 
 (when window-system
   (global-set-key (kbd "C-x C-c") 'ask-before-closing))
-
-;;; Copied from sample.init.el
-(defun Init-safe-require (feat)
-"Try to REQUIRE the specified feature FEAT.  Errors occurring are silenced.
-\(Perhaps in the future there will be a way to get at the error.)
-Returns t if the feature was successfully required."
-  (condition-case nil
-      (progn (require feat) t)
-    (error nil)))
 
 ;;; Copied from Bob Wisniewski's .emacs
 ;; displays the time a day on the bottom of the screen
@@ -267,11 +354,6 @@ Returns t if the feature was successfully required."
   (setq truncate-lines nil)
 )
 
-(defun sh ()
-   (interactive)
-   (shell)
-   (rename-buffer "shell"))
-
 ;; thanks to jonas for this function - allows you to add a number to
 ;; all matching strings in the rest of the document
 (defun inc (txt)
@@ -281,16 +363,6 @@ Returns t if the feature was successfully required."
     (insert (int-to-string la))
     (setq la (1+ la))))
 
-
-;;; Filladapt is a syntax-highlighting package.  When it is enabled it
-;;; makes filling (e.g. using M-q) much much smarter about paragraphs
-;;; that are indented and/or are set off with semicolons, dashes, etc.
-
-(Init-safe-require 'filladapt)
-(setq-default filladapt-mode t)
-(when (fboundp 'turn-off-filladapt-mode)
-  (add-hook 'c-mode-hook 'turn-off-filladapt-mode)
-  (add-hook 'outline-mode-hook 'turn-off-filladapt-mode))
 
 ;;;; Timestamp functions
 ; Create a current time stamp
@@ -309,15 +381,6 @@ Returns t if the feature was successfully required."
   "Insert the current date in format \"yyyy-mm-dd\" at point for file creation."
   (interactive)
   (insert (format-time-string "%Y-%m-%d" (current-time))))
-
-
-(defun comment ()
-  "Insert a C comment with my initials and today's date at point."
-  (interactive)
-  (insert "// David Daly-")
-  (insert-datestamp)
-  (insert ": ")
-)
 
 (defun insert-current-time ()
   "Insert the current time in format \"HH:MM:SS\" at point."
@@ -410,94 +473,18 @@ Returns t if the feature was successfully required."
   (save-buffer)
   (kill-buffer nil))
 
-;;; formatting options
-; Highlight trailing white space using whitespace package
-(require 'whitespace)
-(setq show-trailing-whitespace t)
-(setq whitespace-line-column 100)
-
-;; Dealing with tab and space issues
-(setq c-default-style "gnu"
-          c-basic-offset 4)
-; Don't use tabs
-(setq-default indent-tabs-mode nil)
-; Put .h files in c++ mode also
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
-(add-to-list 'auto-mode-alist '("\\.hh\\'" . c++-mode))
-; apply clang-format on save
-(add-hook 'c++-mode-hook
-  (lambda () (add-hook 'before-save-hook #'clang-format-buffer nil t)))
-
-;;; Use aspell
-(setq-default ispell-program-name "aspell")
-
-;;;; Use case insensitive file completion
-(setq-default completion-ignore-case t)
-
 ;;;; Keybindings
-(global-set-key "\C-co" 'occur)
 (global-set-key "\C-cd" 'insert-current-date)
 (global-set-key "\C-cs" 'insert-datestamp)
 (global-set-key "\C-ct" 'insert-current-time)
 (global-set-key "\C-c-" 'insert-dashed-line)
-(global-set-key "\C-x\C-b" 'ibuffer)
   ;;; keybindings only for windows
-(define-prefix-command 'log-keymap)
-(global-set-key "\C-cl" 'log-keymap)
-(global-set-key "\C-cm" 'meeting)
 (global-set-key "\C-cc" 'completed)
-
-; turn off word complete in minibuffer completion. Allows spaces
-;(define-key minibuffer-local-completion-map 'space nil)
 
 ;;; emacs compatibility
 (eval-and-compile ;; Protect against declare-function undefined in XEmacs
   (unless (fboundp 'declare-function) (defmacro declare-function (&rest r))))
-(global-set-key "\C-x\C-b" 'ibuffer)
 
-(put 'narrow-to-region 'disabled nil)
-
-;;;; UTF-8
-(define-coding-system-alias 'UTF-8 'utf-8)
-
-(require 'yaml-mode)
-    (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-
-; Python support
-;;; Yapify and yapf
-(add-to-list 'load-path "~/.emacs.d/yapfify")
-(require 'yapfify)
-(add-hook 'python-mode-hook 'yapf-mode)
-
-;;; sphinx doc mode for python documentation
-(add-hook 'python-mode-hook (lambda ()
-                                  (require 'sphinx-doc)
-                                  (sphinx-doc-mode t)))
-
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(require 'flycheck-yamllint)
-(eval-after-load 'flycheck
-  '(add-hook 'flycheck-mode-hook 'flycheck-yamllint-setup))
-;; disable jshint since we prefer eslint checking
-(setq-default flycheck-disabled-checkers
-  (append flycheck-disabled-checkers
-          '(javascript-jshint)
-          '(python-flake8)))
-;; use eslint with web-mode for jsx files
-(flycheck-add-mode 'javascript-eslint 'web-mode)
-(add-hook 'c++-mode-hook
-          (lambda () (setq flycheck-gcc-include-path
-                           (list (expand-file-name "/usr/local/include/bsoncxx/v_noabi")))))
-;; (eval-after-load 'flycheck
-;;   '(progn
-;;      (require 'flycheck-google-cpplint)
-;;      ;; Add Google C++ Style checker.
-;;      ;; In default, syntax checked by Clang and Cppcheck.
-;;     (flycheck-add-next-checker 'c/c++-cppcheck
-;;                                 '(warning . c/c++-googlelint))))
-(require 'flycheck-color-mode-line)
-(eval-after-load "flycheck"
-  '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
 
 ;;; .emacs ends here
 (custom-set-variables
@@ -508,13 +495,13 @@ Returns t if the feature was successfully required."
  '(ansi-color-names-vector
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(column-number-mode t)
- '(custom-enabled-themes (quote (wheatgrass)))
+ '(custom-enabled-themes nil)
  '(custom-safe-themes
    (quote
     ("80365dd15f97396bdc38490390c23337063c8965c4556b8f50937e63b5e9a65c" "10461a3c8ca61c52dfbbdedd974319b7f7fd720b091996481c8fb1dded6c6116" default)))
  '(package-selected-packages
    (quote
-    (use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
+    (sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
  '(which-key-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
