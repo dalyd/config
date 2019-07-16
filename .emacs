@@ -57,6 +57,12 @@
   (quelpa '(evergreen :repo "chasinglogic/evergreen.el" :fetcher github))
   )
 
+(use-package diminish
+  :ensure t
+  :commands 'diminish)
+
+
+;;;; Project Management
 ;;; Projectile
 (use-package projectile
   :ensure t
@@ -67,57 +73,93 @@
   :config
   (setq-default
   projectile-completion-system 'ivy
-  projectile-indexing-method 'hybrid
+  projectile-indexing-method 'hybrid ; Use Hybrid indexing using find and git
   projectile-enable-caching t
+  ; Switch directly into dired mode when switching projects rather than find file
   projectile-switch-project-action #'projectile-dired)
   (projectile-mode +1)
   :bind-keymap
   ("C-c p" . projectile-command-map)
 )
 
-; Use Hybrid indexing using find and git
-; Switch directly into dired mode when switching projects rather than find file
+;;;; Autocompletion
+(use-package company
+  :diminish ""
+  :config
+  (setq-default
+   ;; Shorten the default delay to show completions
+   company-idle-delay 0.1
+   ;; Keep capitalization when completing
+   company-dabbrev-downcase nil)
+  ;; Enable completion everywhere
+  (global-company-mode))
 
-;;; cquery and lsp -- semantic parsing of C++ code. Find definitions and calls, etc
-;; I think lsp-ui was causing instability with Genny
-(require 'lsp-ui)
-(add-hook 'lsp-mode-hook 'lsp-ui-mode)
-(setq-default
-   lsp-ui-imenu-enable nil
-   lsp-ui-flycheck-enable t)
-(require 'lsp-mode)
-(require 'lsp-clients)
-(add-hook 'c++-mode-hook #'lsp)
-(add-hook 'python-mode-hook #'lsp)
-(add-hook 'java-mode-hook #'lsp)
-(require 'ccls)
-(setq ccls-executable "/usr/local/bin/ccls")
-(setq-default
-   lsp-prefer-flymake nil
-   lsp-auto-guess-root t)
+;;;; IDE LSP stuff
+(use-package lsp-ui
+  :after lsp-mode
+  :commands lsp-ui-mode
+  :hook
+  (lsp-mode lsp-ui-mode)
+  :config
+  (setq-default lsp-ui-imenu-enable nil
+                lsp-ui-flycheck-enable t))
 
-(require 'company)
-(setq-default
- ;; Shorten the default delay to show completions
- company-idle-delay 0.1
- ;; Keep capitalization when completing
- company-dabbrev-downcase nil)
-;; Enable completion everywhere
-(global-company-mode)
+(use-package company-lsp
+  :commands company-lsp
+  :after (lsp-mode company)
+  :config
+  (push 'company-lsp company-backends))
 
-(require 'company-lsp)
-(push 'company-lsp company-backends)
+(use-package lsp-mode
+  :hook ((c++-mode
+          python-mode
+          java-mode
+          sh-mode) . lsp)
+  :commands lsp
+  :config
+  (setq-default lsp-prefer-flymake nil
+                lsp-auto-guess-root t))
 
-;; For rainbow semantic highlighting
-;; (cquery-use-default-rainbow-sem-highlight)
+;;; C++ language server
+(use-package ccls
+  :config
+  (setq ccls-executable "/usr/local/bin/ccls")
+  :hook ((c-mode c++-mode objc-mode) .
+         (lambda () (require 'ccls) (lsp))))
+
+
+;;;; ELPY Python support -- not LSP based
+(use-package elpy
+  :ensure t
+  :init
+  (elpy-enable)
+  :config
+  ; disable flymake and use flycheck if if exists
+  (when (require 'flycheck nil t)
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    (add-hook 'elpy-mode-hook 'flycheck-mode))
+  (setq python-shell-interpreter "jupyter"
+      python-shell-interpreter-args "console --simple-prompt"
+      python-shell-prompt-detect-failure-warning nil)
+  (add-to-list 'python-shell-completion-native-disabled-interpreters
+             "jupyter")
+  )
+
+
+;;;;; END IDE related
 
 
 ;;; magit: Git porcelain
-(global-set-key (kbd "C-x g") 'magit-status)
-(global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+(use-package magit
+  :commands magit-status
+  :bind ("C-x g" . magit-status)
+  )
 
 ;;; git-gutter
-(global-git-gutter-mode +1)
+(use-package git-gutter
+  :init
+  (global-git-gutter-mode +1)
+  )
 
 ;;; Evergreen support
 (quelpa '(evergreen :repo "chasinglogic/evergreen.el" :fetcher github))
@@ -133,22 +175,6 @@
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-
-;;; Python support
-(require 'elpy)
-(elpy-enable)
-; disable flymake and use flycheck if if exists
-(when (require 'flycheck nil t)
-    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-    (add-hook 'elpy-mode-hook 'flycheck-mode))
-
-(setq python-shell-interpreter "python"
-      python-shell-interpreter-args "-i")
-(setq python-shell-interpreter "jupyter"
-      python-shell-interpreter-args "console --simple-prompt"
-      python-shell-prompt-detect-failure-warning nil)
-(add-to-list 'python-shell-completion-native-disabled-interpreters
-             "jupyter")
 
 ;;; Make sure autosuggest of keybindings is enabled. Maybe I'll learn something
 (setq suggest-key-bindings t)
