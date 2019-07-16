@@ -53,5 +53,7 @@ GRTAGS
 GTAGS
 
 
-# Files for cquery
+# Files for cquery, ccls, etc
 .cquery_cached_index
+.ccls-cache
+compile_commands.json
