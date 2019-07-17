@@ -176,6 +176,10 @@
   :bind ("C-x g" . magit-status)
   )
 
+;;; Support for github, PRs, etc.
+(use-package forge
+  :after magit)
+
 ;;; git-gutter
 (use-package git-gutter
   :init
@@ -513,8 +517,9 @@
     ("80365dd15f97396bdc38490390c23337063c8965c4556b8f50937e63b5e9a65c" "10461a3c8ca61c52dfbbdedd974319b7f7fd720b091996481c8fb1dded6c6116" default)))
  '(package-selected-packages
    (quote
-    (smex yasnippet-snippets auto-yasnippet sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
- '(which-key-mode t))
+    (forge magithub smex yasnippet-snippets auto-yasnippet sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
+ '(which-key-mode t)
+ '(yas-global-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

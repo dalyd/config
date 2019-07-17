@@ -14,3 +14,5 @@
 	ff = only
 [diff]
         colorMoved = default
+[github]
+	user = dalyd
