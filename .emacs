@@ -25,6 +25,9 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+; Collect statistics on pacakges loaded with use-package.
+(setq-default use-package-compute-statistics t)
+
 (use-package diminish
   :ensure t
   :commands 'diminish)
@@ -43,48 +46,59 @@
   projectile-completion-system 'ivy
   projectile-indexing-method 'hybrid ; Use Hybrid indexing using find and git
   projectile-enable-caching t
-  ; Switch directly into dired mode when switching projects rather than find file
-  projectile-switch-project-action #'projectile-dired)
+  ;; ; Switch directly into dired mode when switching projects rather than find file
+  ;; projectile-switch-project-action #'projectile-dired)
+  ;; I prefer a git status when switching to a project
+  projectile-switch-project-action 'magit-status)
   (projectile-mode +1)
   :bind-keymap
   ("C-c p" . projectile-command-map)
+  :requires magit
 )
 
 ;;;; Autocompletion
 (use-package company
-  :diminish ""
+  :init
+  ;; Enable completion everywhere
+  (global-company-mode))
   :config
   (setq-default
    ;; Shorten the default delay to show completions
    company-idle-delay 0.1
    ;; Keep capitalization when completing
    company-dabbrev-downcase nil)
-  ;; Enable completion everywhere
-  (global-company-mode))
 
 ;;;; IDE LSP stuff
 (use-package lsp-ui
   :after lsp-mode
-  :commands lsp-ui-mode
+  :commands (lsp-ui-mode lsp-ui)
   :hook
   (lsp-mode lsp-ui-mode)
   :config
   (setq-default lsp-ui-imenu-enable nil
                 lsp-ui-flycheck-enable t))
 
-(use-package yasnippet)
+(use-package yasnippet
+  :config (yas-global-mode 1))
+
+(use-package yasnippet-snippets
+  :requires yasnippet)
 
 (use-package company-lsp
   :commands company-lsp
   :after (lsp-mode company)
+  :init
+    (push 'company-lsp company-backends)
   :config
-  (push 'company-lsp company-backends))
+  (setq company-lsp-enable-snippet t))
 
 (use-package lsp-mode
   :hook ((c++-mode
           python-mode
           java-mode
-          sh-mode) . lsp)
+          sh-mode
+          js-mode
+          ) . lsp)
   :commands lsp
   :config
   (setq-default lsp-prefer-flymake nil
@@ -96,7 +110,6 @@
   (setq ccls-executable "/usr/local/bin/ccls")
   :hook ((c-mode c++-mode objc-mode) .
          (lambda () (require 'ccls) (lsp))))
-
 
 ;;;; ELPY Python support -- not LSP based
 ;; (use-package elpy
@@ -130,12 +143,18 @@
   :hook (python-mode . sphinx-doc-mode))
 
 (use-package flycheck
+  :ensure t
   :init (global-flycheck-mode)
+  ; Disable some checkers
+  ; disable jshint since we prefer eslint checking
   :config (setq-default flycheck-disabled-checkers
                         (append flycheck-disabled-checkers
                                 '(javascript-jshint)
                                 '(python-flake8)))
   (flycheck-add-mode 'javascript-eslint 'web-mode)
+  :hook
+  (c++-mode . (lambda () (setq flycheck-gcc-include-path
+                           (list (expand-file-name "/usr/local/include/bsoncxx/v_noabi")))))
 )
 
 (use-package flycheck-yamllint
@@ -143,18 +162,6 @@
   :commands flycheck-yamllint-setup
   :hook (flycheck-mode . flycheck-yamllint-setup))
 
-;; disable jshint since we prefer eslint checking
-;; use eslint with web-mode for jsx files
-(add-hook 'c++-mode-hook
-          (lambda () (setq flycheck-gcc-include-path
-                           (list (expand-file-name "/usr/local/include/bsoncxx/v_noabi")))))
-;; (eval-after-load 'flycheck
-;;   '(progn
-;;      (require 'flycheck-google-cpplint)
-;;      ;; Add Google C++ Style checker.
-;;      ;; In default, syntax checked by Clang and Cppcheck.
-;;     (flycheck-add-next-checker 'c/c++-cppcheck
-;;                                 '(warning . c/c++-googlelint))))
 (use-package flycheck-color-mode-line
   :after flycheck
   :hook (flycheck-mode . flycheck-color-mode-line-mode)
@@ -249,7 +256,6 @@
   (outline-mode-hook . turn-off-filladapt-mode))
 
 (use-package ivy
-  :diminish ""
   :init
   (setq
    enable-recursive-minibuffers t
@@ -266,13 +272,19 @@
   ("<f2> u" . counsel-unicode-char)
   )
 
-(use-package smex :after 'counsel)
+; Put the most common things first for M-x
+(use-package smex
+  :after 'counsel
+  :bind
+  ("M-x" . smex))
+
 (use-package counsel
   :commands (
              ;; Auto loaded by projectile on use.
              counsel-ag
              counsel-rg)
 )
+
 
 ; Highlight trailing white space using whitespace package
 (use-package whitespace
@@ -501,7 +513,7 @@
     ("80365dd15f97396bdc38490390c23337063c8965c4556b8f50937e63b5e9a65c" "10461a3c8ca61c52dfbbdedd974319b7f7fd720b091996481c8fb1dded6c6116" default)))
  '(package-selected-packages
    (quote
-    (sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
+    (smex yasnippet-snippets auto-yasnippet sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
  '(which-key-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
