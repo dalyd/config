@@ -67,6 +67,20 @@
    ;; Keep capitalization when completing
    company-dabbrev-downcase nil)
 
+(use-package company-statistics
+  :ensure t
+  :after company
+  :config
+  (company-statistics-mode))
+
+(use-package company-quickhelp
+  :requires company
+  :ensure t
+  :config
+  (setq-default company-quickhelp-delay 0.2)
+  (company-quickhelp-mode)
+  )
+
 ;;;; IDE LSP stuff
 (use-package lsp-ui
   :after lsp-mode
@@ -80,8 +94,7 @@
 (use-package yasnippet
   :config (yas-global-mode 1))
 
-(use-package yasnippet-snippets
-  :requires yasnippet)
+(use-package yasnippet-snippets)
 
 (use-package company-lsp
   :commands company-lsp
@@ -166,6 +179,10 @@
   :hook (flycheck-mode . flycheck-color-mode-line-mode)
   :commands flycheck-color-mode-line-mode
   )
+
+(use-package cmake-mode
+  :ensure t
+  :mode "CMakeLists.txt")
 
 ;;;; END Formatting and flycheck packages
 
@@ -298,6 +315,12 @@
   whitespace-mode
 )
 
+(use-package clang-format
+  ; apply clang-format on save
+  :hook (c++-mode . (lambda () (add-hook 'before-save-hook #'clang-format-buffer nil t)))
+  :commands (clang-format clang-format-buffer clang-format-region)
+)
+
 (use-package sphinx-doc)
 
 ;;;; General Emacs configuration
@@ -324,9 +347,6 @@
 ; Put .h files in c++ mode also
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.hh\\'" . c++-mode))
-; apply clang-format on save
-(add-hook 'c++-mode-hook
-  (lambda () (add-hook 'before-save-hook #'clang-format-buffer nil t)))
 
 ;;; Use aspell
 (setq-default ispell-program-name "aspell")
@@ -516,7 +536,7 @@
     ("80365dd15f97396bdc38490390c23337063c8965c4556b8f50937e63b5e9a65c" "10461a3c8ca61c52dfbbdedd974319b7f7fd720b091996481c8fb1dded6c6116" default)))
  '(package-selected-packages
    (quote
-    (forge magithub smex yasnippet-snippets auto-yasnippet sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
+    (cmake-project cmake-mode company-statistics company-quickhelp forge magithub smex yasnippet-snippets auto-yasnippet sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
  '(which-key-mode t)
  '(yas-global-mode t))
 (custom-set-faces
