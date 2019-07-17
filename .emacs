@@ -53,7 +53,6 @@
   (projectile-mode +1)
   :bind-keymap
   ("C-c p" . projectile-command-map)
-  :requires magit
 )
 
 ;;;; Autocompletion
