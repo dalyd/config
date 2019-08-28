@@ -64,6 +64,9 @@
   (setq-default
    ;; Shorten the default delay to show completions
    company-idle-delay 0.1
+   ;; weight by frequency
+
+   company-transformers '(company-sort-by-occurrence)
    ;; Keep capitalization when completing
    company-dabbrev-downcase nil)
 
@@ -537,6 +540,8 @@
  '(package-selected-packages
    (quote
     (cmake-project cmake-mode company-statistics company-quickhelp forge magithub smex yasnippet-snippets auto-yasnippet sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
+ '(swiper-action-recenter t)
+ '(swiper-stay-on-quit nil)
  '(which-key-mode t)
  '(yas-global-mode t))
 (custom-set-faces
