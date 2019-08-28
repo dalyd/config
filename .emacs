@@ -46,6 +46,7 @@
   projectile-completion-system 'ivy
   projectile-indexing-method 'hybrid ; Use Hybrid indexing using find and git
   projectile-enable-caching t
+  projectile-use-git-grep t
   ;; ; Switch directly into dired mode when switching projects rather than find file
   ;; projectile-switch-project-action #'projectile-dired)
   ;; I prefer a git status when switching to a project
