@@ -215,6 +215,7 @@
   )
 
 ;;; Evergreen support
+(use-package quelpa)
 (quelpa '(evergreen :repo "chasinglogic/evergreen.el" :fetcher github))
 
 ;;; go support
@@ -548,7 +549,7 @@
     ("80365dd15f97396bdc38490390c23337063c8965c4556b8f50937e63b5e9a65c" "10461a3c8ca61c52dfbbdedd974319b7f7fd720b091996481c8fb1dded6c6116" default)))
  '(package-selected-packages
    (quote
-    (auctex cmake-project cmake-mode company-statistics company-quickhelp forge magithub smex yasnippet-snippets auto-yasnippet sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yapfify yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
+    (blacken auctex cmake-project cmake-mode company-statistics company-quickhelp forge magithub smex yasnippet-snippets auto-yasnippet sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
  '(swiper-action-recenter t)
  '(swiper-stay-on-quit nil)
  '(which-key-mode t)
