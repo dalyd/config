@@ -149,9 +149,13 @@
 
 ;;;;; Formatting and flycheck packages
 ;;; Yapify and yapf
-(use-package yapfify
-  :commands yapf-mode
-  :hook (python-mode . yapf-mode))
+;; (use-package yapfify
+;;   :commands yapf-mode
+;;   :hook (python-mode . yapf-mode))
+
+(use-package blacken
+  :commands blacken-mode
+  :hook (python-mode . blacken-mode))
 
 ;;; sphinx doc mode for python documentation
 (use-package sphinx-doc
