@@ -188,6 +188,10 @@
   :ensure t
   :mode "CMakeLists.txt")
 
+;;; Flyspell does online spell checking
+(dolist (hook '(LaTeX-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+
 ;;;; END Formatting and flycheck packages
 
 ;;; magit: Git porcelain
