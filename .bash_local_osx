@@ -5,6 +5,6 @@ export PATH=$PATH:/usr/local/opt/go/libexec/bin
 export PKG_CONFIG_PATH="/usr/local/opt/openssl@1.1/lib/pkgconfig"
 
 # code review alias 
-alias cr='python /Users/daviddaly/src/kernel-tools/codereview/upload.py --check-eslint --server "mongodbcr.appspot.com" -H "mongodbcr.appspot.com" --jira_user david.daly --oauth2 -y \-m'
-alias crnl='python /Users/daviddaly/src/kernel-tools/codereview/upload.py --server "mongodbcr.appspot.com" -H "mongodbcr.appspot.com" --jira_user david.daly --oauth2 -y \-m'
+alias cr='python3 /Users/daviddaly/src/kernel-tools/codereview/upload.py --check-eslint --server "mongodbcr.appspot.com" -H "mongodbcr.appspot.com" --jira_user david.daly --oauth2 -y \-m'
+alias crnl='python3 /Users/daviddaly/src/kernel-tools/codereview/upload.py --server "mongodbcr.appspot.com" -H "mongodbcr.appspot.com" --jira_user david.daly --oauth2 -y \-m'
 
