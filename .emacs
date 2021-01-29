@@ -192,6 +192,12 @@
   :ensure t
   :mode "CMakeLists.txt")
 
+;; Latex related
+(require 'reftex)
+(use-package reftex
+  :ensure t
+  :hook (LaTeX-mode))
+
 ;;; Flyspell does online spell checking
 (dolist (hook '(LaTeX-mode-hook))
   (add-hook hook (lambda () (flyspell-mode 1))))
