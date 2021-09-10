@@ -8,3 +8,7 @@ export PKG_CONFIG_PATH="/usr/local/opt/openssl@1.1/lib/pkgconfig"
 alias cr='python3 /Users/daviddaly/src/kernel-tools/codereview/upload.py --check-eslint --server "mongodbcr.appspot.com" -H "mongodbcr.appspot.com" --jira_user david.daly --oauth2 -y \-m'
 alias crnl='python3 /Users/daviddaly/src/kernel-tools/codereview/upload.py --server "mongodbcr.appspot.com" -H "mongodbcr.appspot.com" --jira_user david.daly --oauth2 -y \-m'
 
+eval "$(starship init bash)"
+
+# Created by `pipx` on 2021-09-10 19:48:58
+export PATH="$PATH:/Users/daviddaly/.local/bin"
