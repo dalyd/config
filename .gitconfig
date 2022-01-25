@@ -12,6 +12,7 @@
 	helper = osxkeychain
 [merge]
 	ff = only
+        confictStyle = zdiff3
 [diff]
         colorMoved = default
 [github]
