@@ -118,6 +118,7 @@
   :commands lsp
   :config
   (setq-default lsp-prefer-flymake nil
+                lsp-clients-clangd-executable "/usr/local/opt/llvm/bin/clangd"
                 lsp-auto-guess-root t))
 
 ;;; C++ language server
