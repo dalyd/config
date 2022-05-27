@@ -14,6 +14,8 @@
 (add-hook 'text-mode-hook 'text-mode-hook-identify)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
+;(require 'use-package-ensure)
+
 ;;; elpa magic
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -43,7 +45,7 @@
              projectile-project-name)
   :config
   (setq-default
-  projectile-completion-system 'ivy
+;  projectile-completion-system 'ivy
   projectile-indexing-method 'hybrid ; Use Hybrid indexing using find and git
   projectile-enable-caching t
   projectile-use-git-grep t
@@ -122,11 +124,11 @@
                 lsp-auto-guess-root t))
 
 ;;; C++ language server
-(use-package ccls
-  :config
-  (setq ccls-executable "/usr/local/bin/ccls")
-  :hook ((c-mode c++-mode objc-mode) .
-         (lambda () (require 'ccls) (lsp))))
+;; (use-package ccls
+;;   :config
+;;   (setq ccls-executable "/usr/local/bin/ccls")
+;;   :hook ((c-mode c++-mode objc-mode) .
+;;          (lambda () (require 'ccls) (lsp))))
 
 ;;;; ELPY Python support -- not LSP based
 ;; (use-package elpy
@@ -159,9 +161,9 @@
   :hook (python-mode . blacken-mode))
 
 ;;; sphinx doc mode for python documentation
-(use-package sphinx-doc
-  :commands sphinx-doc-mode
-  :hook (python-mode . sphinx-doc-mode))
+;; (use-package sphinx-doc
+;;   :commands sphinx-doc-mode
+;;   :hook (python-mode . sphinx-doc-mode))
 
 (use-package flycheck
   :ensure t
@@ -222,8 +224,8 @@
   )
 
 ;;; Evergreen support
-(use-package quelpa)
-(quelpa '(evergreen :repo "chasinglogic/evergreen.el" :fetcher github))
+;(use-package quelpa)
+;(quelpa '(evergreen :repo "chasinglogic/evergreen.el" :fetcher github))
 
 ;;; go support
 (add-to-list 'load-path (concat (getenv "GOPATH")  "/src/github.com/golang/lint/misc/emacs"))
@@ -268,20 +270,20 @@
 
 ;; Get the path we would have in a terminal
 (use-package exec-path-from-shell
-  :config (exec-path-from-shell-initialize))
+ :config (exec-path-from-shell-initialize))
 
 ;; pretty modeline
-(use-package all-the-icons)
-(use-package doom-modeline
-  :ensure t
-  :hook (after-init . doom-modeline-mode))
+;(use-package all-the-icons)
+;(use-package doom-modeline
+;  :ensure t
+;  :hook (after-init . doom-modeline-mode))
 
 ;; suggest completions. Show help on potential completions for key sequence
 
-(use-package which-key
-  :diminish ""
-  :config
-  (which-key-mode))
+;; (use-package which-key
+;;   :diminish ""
+;;   :config
+;;   (which-key-mode))
 
 ;;; Filladapt is a syntax-highlighting package.  When it is enabled it
 ;;; makes filling (e.g. using M-q) much much smarter about paragraphs
@@ -341,7 +343,7 @@
   :commands (clang-format clang-format-buffer clang-format-region)
 )
 
-(use-package sphinx-doc)
+;(use-package sphinx-doc)
 
 ;;;; General Emacs configuration
 ;;; Make sure autosuggest of keybindings is enabled. Maybe I'll learn something
@@ -540,10 +542,10 @@
 (eval-and-compile ;; Protect against declare-function undefined in XEmacs
   (unless (fboundp 'declare-function) (defmacro declare-function (&rest r))))
 
-(add-to-list 'load-path "~/.emacs.d/keyfreq/")
-(require 'keyfreq)
-(keyfreq-mode 1)
-(keyfreq-autosave-mode 1)
+;; (add-to-list 'load-path "~/.emacs.d/keyfreq/")
+;; (require 'keyfreq)
+;; (keyfreq-mode 1)
+;; (keyfreq-autosave-mode 1)
 
 ;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
 (defun unfill-paragraph (&optional region)
@@ -554,26 +556,39 @@
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 
-;;; .emacs ends here
+;; ;;; .emacs ends here
+;; (custom-set-variables
+;;  ;; custom-set-variables was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(ansi-color-names-vector
+;;    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+;;  '(column-number-mode t)
+;;  '(custom-enabled-themes nil)
+;;  '(custom-safe-themes
+;;    (quote
+;;     ("80365dd15f97396bdc38490390c23337063c8965c4556b8f50937e63b5e9a65c" "10461a3c8ca61c52dfbbdedd974319b7f7fd720b091996481c8fb1dded6c6116" default)))
+;;  '(package-selected-packages
+;;    (quote
+;;     (blacken auctex cmake-project cmake-mode company-statistics company-quickhelp forge magithub smex yasnippet-snippets auto-yasnippet sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
+;;  '(swiper-action-recenter t)
+;;  '(swiper-stay-on-quit nil)
+;;  '(which-key-mode t)
+;;  '(yas-global-mode t))
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  )
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector
-   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
- '(column-number-mode t)
- '(custom-enabled-themes nil)
- '(custom-safe-themes
-   (quote
-    ("80365dd15f97396bdc38490390c23337063c8965c4556b8f50937e63b5e9a65c" "10461a3c8ca61c52dfbbdedd974319b7f7fd720b091996481c8fb1dded6c6116" default)))
  '(package-selected-packages
-   (quote
-    (blacken auctex cmake-project cmake-mode company-statistics company-quickhelp forge magithub smex yasnippet-snippets auto-yasnippet sphinx-doc use-package counsel ccls doom-themes which-key doom-modeline all-the-icons exec-path-from-shell company-lsp magit elpy evergreen quelpa lsp-java flx-ido lsp-ui fill-column-indicator git-gutter cquery lsp-mode ggtags dash-at-point direx neotree clang-format projectile flycheck-pycheckers json-mode yaml-mode sphinx-mode markdown-mode+ golint go flycheck-yamllint flycheck-color-mode-line auto-complete)))
- '(swiper-action-recenter t)
- '(swiper-stay-on-quit nil)
- '(which-key-mode t)
- '(yas-global-mode t))
+   '(yapfify python-black yaml-mode json-mode forge magit fill-column-indicator markdown-mode flycheck-color-mode-line flycheck-yamllint exec-path-from-shell yasnippet-snippets use-package projectile lv golint git-gutter flycheck diminish counsel company-statistics company-quickhelp cmake-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
