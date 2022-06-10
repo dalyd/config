@@ -2,6 +2,10 @@
 # Created by `pipx` on 2022-03-28 19:06:26
 export PATH="$PATH:/Users/david.daly/.local/bin"
 
+# Enable zsh-autocomplete
+source ~/zshstuff/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
 umask 0022
 
 alias ssh='ssh -A -YC' # Enable agent forwarding and X11 forwarding
@@ -100,6 +104,8 @@ export LESSGLOBALTAGS=global
 eval "$(starship init zsh)"
 
 fpath=(~/.zsh $fpath)
+fpath=(/Users/david.daly/zshstuff/zsh-completions/src $fpath)
+complete -f -W "infrastructure_provisioning mongodb_setup workload_setup test_control infrastructure_teardown conn" run-dsi
 
 eval $(thefuck --alias)
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
