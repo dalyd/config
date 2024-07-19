@@ -10,6 +10,9 @@
 
 ;;; Code:
 
+;;; https://github.com/jscheid/prettier.el/issues/33#issuecomment-657221634
+(setenv "NODE_PATH" "/opt/homebrew/lib/node_modules/npm")
+
 ;;; Automatically turn on auto fill mode for text mode buffers
 (add-hook 'text-mode-hook 'text-mode-hook-identify)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
@@ -20,7 +23,7 @@
 (require 'package)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "https://marmalade-repo.org/packages/")
+                         ;("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 (when (not (package-installed-p 'use-package))
@@ -123,30 +126,18 @@
                 lsp-clients-clangd-executable "/usr/local/opt/llvm/bin/clangd"
                 lsp-auto-guess-root t))
 
+;; (use-package lsp-pyright
+;;   :ensure t
+;;   :hook (python-mode . (lambda ()
+;;                           (require 'lsp-pyright)
+;;                           (lsp))))  ; or lsp-deferred
+
 ;;; C++ language server
 ;; (use-package ccls
 ;;   :config
 ;;   (setq ccls-executable "/usr/local/bin/ccls")
 ;;   :hook ((c-mode c++-mode objc-mode) .
 ;;          (lambda () (require 'ccls) (lsp))))
-
-;;;; ELPY Python support -- not LSP based
-;; (use-package elpy
-;;   :ensure t
-;;   :init
-;;   (elpy-enable)
-;;   :config
-;;   ; disable flymake and use flycheck if if exists
-;;   (when (require 'flycheck nil t)
-;;     (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-;;     (add-hook 'elpy-mode-hook 'flycheck-mode))
-;;   (setq python-shell-interpreter "jupyter"
-;;       python-shell-interpreter-args "console --simple-prompt"
-;;       python-shell-prompt-detect-failure-warning nil)
-;;   (add-to-list 'python-shell-completion-native-disabled-interpreters
-;;              "jupyter")
-;;   )
-
 
 ;;;;; END IDE related
 
@@ -155,10 +146,6 @@
 ;; (use-package yapfify
 ;;   :commands yapf-mode
 ;;   :hook (python-mode . yapf-mode))
-
-(use-package blacken
-  :commands blacken-mode
-  :hook (python-mode . blacken-mode))
 
 ;;; sphinx doc mode for python documentation
 ;; (use-package sphinx-doc
@@ -172,8 +159,7 @@
   ; disable jshint since we prefer eslint checking
   :config (setq-default flycheck-disabled-checkers
                         (append flycheck-disabled-checkers
-                                '(javascript-jshint)
-                                '(python-flake8)))
+                                '(javascript-jshint)))
   (flycheck-add-mode 'javascript-eslint 'web-mode)
   :hook
   (c++-mode . (lambda () (setq flycheck-gcc-include-path
@@ -588,7 +574,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(yapfify python-black yaml-mode json-mode forge magit fill-column-indicator markdown-mode flycheck-color-mode-line flycheck-yamllint exec-path-from-shell yasnippet-snippets use-package projectile lv golint git-gutter flycheck diminish counsel company-statistics company-quickhelp cmake-mode)))
+   '(lsp-python prettier flycheck-mmark magit closql dash zprint-format emacsql lsp-ui lsp-mode git-link indent-tools yapfify yaml-mode json-mode forge fill-column-indicator markdown-mode flycheck-color-mode-line flycheck-yamllint exec-path-from-shell yasnippet-snippets use-package projectile lv golint git-gutter flycheck diminish counsel company-statistics company-quickhelp cmake-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
