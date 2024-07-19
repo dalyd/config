@@ -57,3 +57,11 @@ GTAGS
 .cquery_cached_index
 .ccls-cache
 compile_commands.json
+
+# Jupyter
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+
+# Python
+.python-version
