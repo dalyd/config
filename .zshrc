@@ -112,3 +112,6 @@ complete -f -W "infrastructure_provisioning mongodb_setup workload_setup test_co
 
 eval $(thefuck --alias)
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
