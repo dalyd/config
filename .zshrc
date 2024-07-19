@@ -1,7 +1,4 @@
 
-# Created by `pipx` on 2022-03-28 19:06:26
-export PATH="$PATH:/Users/david.daly/.local/bin"
-
 # Enable zsh-autocomplete
 source ~/zshstuff/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -18,6 +15,12 @@ alias gitdiff='git diff $(gitbase)'
 
 # Move a file and replace original location with symbolic link 
 function lmv(){ [ -e "$1" ] && [ -e "$2" ] && mv "$1" "$2" && ln -s "$2" $"(basename $1)" $"(dirname $1)"; }
+
+# pyenv stuff
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/shims:$PATH"
+eval "$(pyenv init -)"
+
 
 #alias ls='ls -B --color=tty'
 # make a directory and cd into it
