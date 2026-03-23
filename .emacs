@@ -23,7 +23,7 @@
 (require 'package)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ;("marmalade" . "https://marmalade-repo.org/packages/")
+                         ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")))
 (package-initialize)
 (when (not (package-installed-p 'use-package))
@@ -100,10 +100,10 @@
   (setq-default lsp-ui-imenu-enable nil
                 lsp-ui-flycheck-enable t))
 
-(use-package yasnippet
-  :config (yas-global-mode 1))
+;; (use-package yasnippet
+;;   :config (yas-global-mode 1))
 
-(use-package yasnippet-snippets)
+;; (use-package yasnippet-snippets)
 
 (use-package company-lsp
   :commands company-lsp
@@ -214,9 +214,9 @@
 ;(quelpa '(evergreen :repo "chasinglogic/evergreen.el" :fetcher github))
 
 ;;; go support
-(add-to-list 'load-path (concat (getenv "GOPATH")  "/src/github.com/golang/lint/misc/emacs"))
-(add-hook 'before-save-hook #'gofmt-before-save)
-(require 'golint)
+;; (add-to-list 'load-path (concat (getenv "GOPATH")  "/src/github.com/golang/lint/misc/emacs"))
+;; (add-hook 'before-save-hook #'gofmt-before-save)
+;; (require 'golint)
 
 ;;; Markdown mode support
 (use-package markdown-mode
@@ -283,22 +283,22 @@
   (c++-mode . turn-off-filladapt-mode)
   (outline-mode-hook . turn-off-filladapt-mode))
 
-(use-package ivy
-  :init
-  (setq
-   enable-recursive-minibuffers t
-   ivy-use-virtual-buffers t)
-  (ivy-mode 1)
-  :bind
-  ("C-s" . swiper)
-  ("M-x" . counsel-M-x)
-  ("C-x C-f" . counsel-find-file)
-  ("<f1> f" . counsel-describe-function)
-  ("<f1> v" . counsel-describe-variable)
-  ("<f1> l" . counsel-find-library)
-  ("<f2> i" . counsel-info-lookup-symbol)
-  ("<f2> u" . counsel-unicode-char)
-  )
+;; (use-package ivy
+;;   :init
+;;   (setq
+;;    enable-recursive-minibuffers t
+;;    ivy-use-virtual-buffers t)
+;;   (ivy-mode 1)
+;;   :bind
+;;   ("C-s" . swiper)
+;;   ("M-x" . counsel-M-x)
+;;   ("C-x C-f" . counsel-find-file)
+;;   ("<f1> f" . counsel-describe-function)
+;;   ("<f1> v" . counsel-describe-variable)
+;;   ("<f1> l" . counsel-find-library)
+;;   ("<f2> i" . counsel-info-lookup-symbol)
+;;   ("<f2> u" . counsel-unicode-char)
+;;   )
 
 ; Put the most common things first for M-x
 (use-package smex
@@ -542,6 +542,31 @@
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 
+;;; TIDE for typescript
+(defun setup-tide-mode ()
+  "Setup Typescript Mode."
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+
+;; if you use typescript-mode
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+;; if you use treesitter based typescript-ts-mode (emacs 29+)
+(add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
+
 ;; ;;; .emacs ends here
 ;; (custom-set-variables
 ;;  ;; custom-set-variables was added by Custom.
@@ -574,7 +599,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(lsp-python prettier flycheck-mmark magit closql dash zprint-format emacsql lsp-ui lsp-mode git-link indent-tools yapfify yaml-mode json-mode forge fill-column-indicator markdown-mode flycheck-color-mode-line flycheck-yamllint exec-path-from-shell yasnippet-snippets use-package projectile lv golint git-gutter flycheck diminish counsel company-statistics company-quickhelp cmake-mode)))
+   '(closql cmake-mode company-quickhelp company-statistics counsel dash diminish emacsql
+            exec-path-from-shell fill-column-indicator flycheck flycheck-color-mode-line
+            flycheck-mmark flycheck-yamllint forge git-gutter git-link golint indent-tools json-mode
+            lsp-mode lsp-python lsp-ui lv magit markdown-mode prettier projectile tide
+            typescript-mode use-package yaml-mode yapfify yasnippet-snippets zprint-format)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

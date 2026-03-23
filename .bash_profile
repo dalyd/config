@@ -12,3 +12,10 @@ eval "$(pyenv init --path)"
 #if [ -e ~/scripts/git-completion.bash ]; then
 #    source ~/scripts/git-completion.bash
 #fi
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/daviddaly/.lmstudio/bin"
+# End of LM Studio CLI section
+

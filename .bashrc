@@ -106,3 +106,8 @@ if [ -e "${HOME}"/.bash_local ] ; then
     . "${HOME}"/.bash_local
 fi
 
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/daviddaly/.lmstudio/bin"
+# End of LM Studio CLI section
+
