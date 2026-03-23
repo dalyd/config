@@ -3,6 +3,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Zsh plugins
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 umask 0022
 
@@ -59,7 +60,9 @@ export VISUAL=emacs
 eval "$(starship init zsh)"
 
 # Completions
-fpath=(~/.zsh $fpath)
+fpath=($(brew --prefix)/share/zsh-completions ~/.zsh $fpath)
+autoload -Uz compinit
+compinit
 
 # iTerm2 integration
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
