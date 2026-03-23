@@ -1,8 +1,27 @@
 # config
-My config files
 
-Configuration files should be versioned here, and then symbolically linked from home directory or wherever appropriate. 
-The install_config.sh file can be used to setup the symbolic links. It
-should be run from the config directory. 
+Personal configuration files (dotfiles), managed with symlinks.
 
-Special case for .bash_local. .bash_local_osx should be linked to ~/.bash_local on OS X machines. 
+## Setup
+
+Clone the repo and run the install script with a profile name:
+
+```bash
+git clone git@github.com:dalyd/config.git ~/src/config
+cd ~/src/config
+./install.sh personal
+```
+
+## Structure
+
+- **Shared core** (top-level dotfiles): `.zshrc`, `.emacs`, `.gitconfig`, `.tmux.conf`, etc.
+- **`profiles/`**: Machine/context-specific overrides. Each profile directory contains `.local` files that are sourced or included by the shared core.
+  - `profiles/personal/` — personal machine settings
+  - `profiles/work/` — work machine settings
+- **`install.sh <profile>`**: Symlinks shared core + profile overrides into `~/`
+
+## Adding a new profile
+
+1. Create a directory under `profiles/` (e.g., `profiles/newjob/`)
+2. Add `.gitconfig.local` and `.zshrc.local` with context-specific settings
+3. Run `./install.sh newjob`

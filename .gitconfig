@@ -1,20 +1,17 @@
+[include]
+	path = ~/.gitconfig.local
 [user]
 	name = dalyd
-	email = david.daly@mongodb.com
 [core]
 	editor = emacs
 	excludesfile = ~/.gitignore_global
-[filter "media"]
-	required = true
-	clean = git media clean %f
-	smudge = git media smudge %f
 [credential]
 	helper = osxkeychain
 [merge]
 	ff = only
-        confictStyle = zdiff3
+	conflictStyle = zdiff3
 [diff]
-        colorMoved = default
+	colorMoved = default
 [github]
 	user = dalyd
 [filter "lfs"]

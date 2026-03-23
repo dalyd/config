@@ -1,0 +1,4 @@
+# Personal machine overrides
+
+# LM Studio CLI
+export PATH="$PATH:/Users/daviddaly/.lmstudio/bin"
