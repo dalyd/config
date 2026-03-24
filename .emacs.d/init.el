@@ -105,62 +105,29 @@
 ;;;; LSP and diagnostics
 ;;;; ============================================================
 
-(use-package lsp-ui
-  :after lsp-mode
-  :commands (lsp-ui-mode lsp-ui)
-  :hook (lsp-mode . lsp-ui-mode)
+;; Eglot — built-in LSP client (replaces lsp-mode)
+(use-package eglot
+  :ensure nil  ; built-in
+  :hook ((python-mode python-ts-mode
+          java-mode java-ts-mode
+          js-mode js-ts-mode
+          typescript-mode typescript-ts-mode
+          sh-mode bash-ts-mode) . eglot-ensure)
   :config
-  (setq-default lsp-ui-imenu-enable nil
-                lsp-ui-flycheck-enable t))
+  (setq eglot-autoshutdown t))   ; kill server when last buffer closes
 
-(use-package lsp-mode
-  :hook ((python-mode
-          java-mode
-          sh-mode
-          js-mode) . lsp)
-  :commands lsp
-  :config
-  (setq-default lsp-diagnostics-provider :flycheck
-                lsp-auto-guess-root t))
-
-(use-package flycheck
-  :init (global-flycheck-mode)
-  :config (setq-default flycheck-disabled-checkers
-                        (append flycheck-disabled-checkers
-                                '(javascript-jshint)))
-  (flycheck-add-mode 'javascript-eslint 'web-mode))
-
-(use-package flycheck-yamllint
-  :after flycheck
-  :commands flycheck-yamllint-setup
-  :hook (flycheck-mode . flycheck-yamllint-setup))
-
-(use-package flycheck-color-mode-line
-  :after flycheck
-  :hook (flycheck-mode . flycheck-color-mode-line-mode)
-  :commands flycheck-color-mode-line-mode)
+;; Flymake is built-in and works with Eglot out of the box
+;; No extra config needed — Eglot activates it automatically
 
 ;;;; ============================================================
-;;;; TypeScript (Tide)
+;;;; Format on save (via Eglot)
 ;;;; ============================================================
 
-(defun setup-tide-mode ()
-  "Setup Typescript Mode."
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1))
-
-;; Format typescript buffers before saving (buffer-local)
-(add-hook 'typescript-mode-hook
-          (lambda () (add-hook 'before-save-hook #'tide-format-before-save nil t)))
-(add-hook 'typescript-ts-mode-hook
-          (lambda () (add-hook 'before-save-hook #'tide-format-before-save nil t)))
-
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
-(add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
+;; Format buffer via LSP before saving (replaces tide-format-before-save)
+(defun my/eglot-format-on-save ()
+  (when (bound-and-true-p eglot--managed-mode)
+    (eglot-format-buffer)))
+(add-hook 'before-save-hook #'my/eglot-format-on-save)
 
 ;;;; ============================================================
 ;;;; Version control
