@@ -18,6 +18,8 @@
 - Added .claude/CLAUDE.md and settings.json to version control
 - Wrote new install.sh that takes a profile name argument
 - Updated README.md
+- Installed zsh-autosuggestions, zsh-syntax-highlighting, zsh-completions via homebrew and added to .zshrc
+- Changed default shell from bash to zsh (`chsh -s /bin/zsh`)
 
 ### Decisions
 - Use `~/src/config` as the single repo location (user wants all repos in ~/src)

@@ -56,13 +56,15 @@ fi
 export EDITOR=emacs
 export VISUAL=emacs
 
-# Starship prompt
-eval "$(starship init zsh)"
+# Starship prompt (disable inside Claude Code to avoid rendering issues)
+if [[ -z "$CLAUDECODE" ]]; then
+    eval "$(starship init zsh)"
+fi
 
 # Completions
 fpath=($(brew --prefix)/share/zsh-completions ~/.zsh $fpath)
 autoload -Uz compinit
-compinit
+compinit -u
 
 # iTerm2 integration
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"

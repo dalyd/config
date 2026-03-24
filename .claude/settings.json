@@ -1,5 +1,9 @@
 {
   "model": "opus",
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  },
   "enabledPlugins": {
     "obsidian@obsidian-skills": true,
     "obsidian-cli@obsidian-cli-skill": true,
