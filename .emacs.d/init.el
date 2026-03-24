@@ -84,25 +84,22 @@
 ;;;; Autocompletion
 ;;;; ============================================================
 
-(use-package company
+;; Corfu — lightweight in-buffer completion popup (replaces Company)
+(use-package corfu
+  :init (global-corfu-mode)
+  :config
+  (setq corfu-auto t              ; auto-popup like company-idle-delay
+        corfu-auto-delay 0.1      ; match old company-idle-delay
+        corfu-auto-prefix 2       ; start after 2 chars
+        corfu-cycle t
+        corfu-popupinfo-delay '(0.5 . 0.5))
+  (corfu-popupinfo-mode))         ; replaces company-quickhelp
+
+;; Cape — extra completion-at-point backends (replaces company-dabbrev etc.)
+(use-package cape
   :init
-  (global-company-mode)
-  :config
-  (setq-default
-   company-idle-delay 0.1
-   company-transformers '(company-sort-by-occurrence)
-   company-dabbrev-downcase nil))
-
-(use-package company-statistics
-  :after company
-  :config
-  (company-statistics-mode))
-
-(use-package company-quickhelp
-  :requires company
-  :config
-  (setq-default company-quickhelp-delay 0.2)
-  (company-quickhelp-mode))
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file))
 
 ;;;; ============================================================
 ;;;; LSP and diagnostics
@@ -154,10 +151,7 @@
   (flycheck-mode +1)
   (setq flycheck-check-syntax-automatically '(save mode-enabled))
   (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  (company-mode +1))
-
-(setq company-tooltip-align-annotations t)
+  (tide-hl-identifier-mode +1))
 
 ;; Format typescript buffers before saving (buffer-local)
 (add-hook 'typescript-mode-hook
