@@ -144,6 +144,21 @@
          (magit-post-refresh . diff-hl-magit-post-refresh)))
 
 ;;;; ============================================================
+;;;; LLM integration
+;;;; ============================================================
+
+;; gptel — LLM client for Emacs (works with Anthropic, OpenAI, local models)
+(use-package gptel
+  :config
+  ;; Set up Anthropic Claude as a backend
+  (setq gptel-backend
+        (gptel-make-anthropic "Claude"
+          :key 'gptel-api-key-from-auth-source
+          :stream t)
+        gptel-model 'claude-sonnet-4-20250514
+        gptel-default-mode 'markdown-mode))
+
+;;;; ============================================================
 ;;;; Modes and file types
 ;;;; ============================================================
 
@@ -406,22 +421,8 @@
 ;;;; Custom file (managed by Emacs customize system)
 ;;;; ============================================================
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(company-quickhelp company-statistics counsel dash diminish
-            exec-path-from-shell flycheck flycheck-color-mode-line
-            flycheck-yamllint forge git-gutter json-mode
-            lsp-mode lsp-ui magit markdown-mode projectile tide
-            typescript-mode use-package yaml-mode yasnippet-snippets)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; Keep customize output in a separate file to avoid polluting init.el
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file 'noerror)
 
 ;;; init.el ends here
