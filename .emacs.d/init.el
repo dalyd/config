@@ -144,21 +144,6 @@
          (magit-post-refresh . diff-hl-magit-post-refresh)))
 
 ;;;; ============================================================
-;;;; LLM integration
-;;;; ============================================================
-
-;; gptel — LLM client for Emacs (works with Anthropic, OpenAI, local models)
-(use-package gptel
-  :config
-  ;; Set up Anthropic Claude as a backend
-  (setq gptel-backend
-        (gptel-make-anthropic "Claude"
-          :key 'gptel-api-key-from-auth-source
-          :stream t)
-        gptel-model 'claude-sonnet-4-20250514
-        gptel-default-mode 'markdown-mode))
-
-;;;; ============================================================
 ;;;; Modes and file types
 ;;;; ============================================================
 
