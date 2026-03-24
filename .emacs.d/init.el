@@ -22,6 +22,7 @@
 (require 'package)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                          ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 (when (not (package-installed-p 'use-package))
@@ -142,6 +143,21 @@
   :init (global-diff-hl-mode)
   :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
          (magit-post-refresh . diff-hl-magit-post-refresh)))
+
+;;;; ============================================================
+;;;; Claude Code
+;;;; ============================================================
+
+;; eat — terminal emulator (needed by claude-code-ide)
+(use-package eat
+  :commands eat)
+
+;; claude-code-ide — run Claude Code inside Emacs
+(use-package claude-code-ide
+  :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
+  :bind ("C-c C-'" . claude-code-ide-menu)
+  :config
+  (claude-code-ide-emacs-tools-setup))
 
 ;;;; ============================================================
 ;;;; Modes and file types
