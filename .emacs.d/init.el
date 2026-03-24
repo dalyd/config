@@ -65,20 +65,17 @@
 ;;;; Project management
 ;;;; ============================================================
 
-(use-package projectile
-  :commands (projectile-switch-project
-             projectile-find-file
-             projectile-project-root
-             projectile-project-name)
-  :config
-  (setq-default
-   projectile-indexing-method 'hybrid
-   projectile-enable-caching t
-   projectile-use-git-grep t
-   projectile-switch-project-action 'magit-status)
-  (projectile-mode +1)
-  :bind-keymap
-  ("C-c p" . projectile-command-map))
+;; project.el is built-in — replaces Projectile
+;; Rebind to familiar keys
+(global-set-key (kbd "C-c p f") #'project-find-file)
+(global-set-key (kbd "C-c p g") #'project-find-regexp)
+(global-set-key (kbd "C-c p p") #'project-switch-project)
+(global-set-key (kbd "C-c p d") #'project-find-dir)
+(global-set-key (kbd "C-c p k") #'project-kill-buffers)
+(global-set-key (kbd "C-c p s") #'project-shell)
+
+;; When switching projects, open magit (like projectile-switch-project-action)
+(setq project-switch-commands 'magit-status)
 
 ;;;; ============================================================
 ;;;; Autocompletion
@@ -140,9 +137,11 @@
 (use-package forge
   :after magit)
 
-(use-package git-gutter
-  :init
-  (global-git-gutter-mode +1))
+;; diff-hl — highlight VCS changes in the fringe (replaces git-gutter)
+(use-package diff-hl
+  :init (global-diff-hl-mode)
+  :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
+         (magit-post-refresh . diff-hl-magit-post-refresh)))
 
 ;;;; ============================================================
 ;;;; Modes and file types
