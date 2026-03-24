@@ -1,3 +1,39 @@
+## 2026-03-23 (session 3)
+
+### Investigated
+- Reviewed .emacs configuration for bugs, stale config, and missing packages
+- Compared installed elpa packages against what's referenced in config
+- Diagnosed startup warnings: dired `--dired` flag (macOS BSD ls), stale projectile .elc, ivy package-not-found on MELPA
+
+### Changed
+- Fixed broken company use-package parenthesization (`:config` block was orphaned outside the form)
+- Removed deprecated `company-lsp` (lsp-mode has built-in company integration since 2020)
+- Removed dead Marmalade package repo, switched GNU and MELPA to HTTPS
+- Added `use-package-always-ensure t` globally, removed redundant per-package `:ensure t`
+- Replaced `fill-column-indicator` package with built-in `display-fill-column-indicator-mode` (Emacs 27+)
+- Replaced deprecated `lsp-prefer-flymake` with `lsp-diagnostics-provider :flycheck`
+- Made `tide-format-before-save` buffer-local to typescript modes (was running globally on all saves)
+- Fixed `filladapt` hook typo (`outline-mode-hook` → `outline-mode`), fixed `smex` `:after` quoting
+- Removed XEmacs compatibility shim and references
+- Removed Dropbox/TaskTracking functions (`tasks`, `projects`, `completed`) and `C-c c` keybinding
+- Removed all C/C++ support: clang-format, cmake-mode, clangd config, bsoncxx include path, .h/.hh auto-mode
+- Removed redundant `(require 'reftex)` before its use-package block
+- Cleaned up all commented-out package blocks and stale `package-selected-packages`
+- Added `dired-use-ls-dired nil` for macOS
+- Simplified `ask-before-closing` (removed Emacs <21 branch)
+
+### Decisions
+- Remove C/C++ and clang support entirely — user no longer uses them
+- Remove Dropbox/TaskTracking — stale paths with old macOS capitalization, no longer in use
+- Keep smex and counsel config even though not currently installed — user may want them
+
+### Open threads
+- Many packages in config are not installed in elpa (forge, magit, counsel, smex, lsp-mode, etc.) — need `M-x package-install-selected-packages` after `M-x package-refresh-contents`
+- Stale `.elc` files in elpa — run `M-x byte-recompile-directory` on `~/.emacs.d/elpa/`
+- NODE_PATH env var for prettier.el workaround may be stale — worth checking if still needed
+
+---
+
 ## 2026-03-23 (session 2)
 
 ### Investigated
