@@ -244,15 +244,36 @@
 ;;;; Minibuffer and M-x
 ;;;; ============================================================
 
-;; Put the most common things first for M-x
-(use-package smex
-  :after counsel
-  :bind
-  ("M-x" . smex))
+;; Vertico — vertical minibuffer completion UI
+(use-package vertico
+  :init (vertico-mode)
+  :config (setq vertico-count 15))
 
-(use-package counsel
-  :commands (counsel-ag
-             counsel-rg))
+;; Orderless — flexible completion matching (space-separated patterns)
+(use-package orderless
+  :config
+  (setq completion-styles '(orderless basic)
+        completion-category-overrides '((file (styles partial-completion)))))
+
+;; Marginalia — rich annotations in minibuffer (docstrings, file sizes, etc.)
+(use-package marginalia
+  :init (marginalia-mode))
+
+;; Consult — enhanced search/navigation commands replacing counsel-rg, counsel-ag, etc.
+(use-package consult
+  :bind (("C-x b" . consult-buffer)        ; enhanced buffer switching
+         ("M-g g" . consult-goto-line)
+         ("M-g M-g" . consult-goto-line)
+         ("M-s r" . consult-ripgrep)        ; replaces counsel-rg
+         ("M-s l" . consult-line)           ; search lines in buffer
+         ("M-s g" . consult-grep)))
+
+;; Embark — context actions on minibuffer candidates (like right-click menu)
+(use-package embark
+  :bind ("C-." . embark-act))
+
+(use-package embark-consult
+  :after (embark consult))
 
 ;;;; ============================================================
 ;;;; Buffer management
