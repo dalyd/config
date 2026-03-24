@@ -1,3 +1,29 @@
+## 2026-03-23 (session 2)
+
+### Investigated
+- Tested dotfiles setup: verified shell, symlinks, plugins, git identity, completions
+- Diagnosed `compinit: insecure directories` warning — caused by `/opt/homebrew/share` group-write permissions
+- Diagnosed starship prompt overwriting output inside Claude Code's terminal
+- Researched Claude Code status line, plugins, hooks, skills, and MCP extensibility
+
+### Changed
+- Fixed compinit warning: added `-u` flag to skip insecure directory check (standard Homebrew fix)
+- Disabled starship inside Claude Code by gating on `$CLAUDECODE` env var
+- Added Claude Code status line showing model, context %, git branch/status, and rate limits
+- Added `.claude/statusline.sh` to repo and `install.sh`
+
+### Decisions
+- Use `compinit -u` rather than fixing `/opt/homebrew/share` permissions — permissions are set by Homebrew and would revert on updates
+- Disable starship entirely in Claude Code rather than tweaking starship config — simpler and avoids all rendering issues
+- Rate limit data comes from Claude Code's built-in session JSON, no need for external API calls
+
+### Open threads
+- Consider adding notification hook (desktop alert when Claude needs input)
+- Consider adding custom skills (e.g., `/test-install` to validate dotfiles setup)
+- Status line rate limit fields only appear for Claude.ai subscribers — will be empty for API users
+
+---
+
 ## 2026-03-23
 
 ### Investigated
