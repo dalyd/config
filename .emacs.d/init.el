@@ -1,9 +1,13 @@
-;;; .emacs -- My emacs configuration
+;;; init.el -- Emacs configuration -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Borrowed liberally from other places.  A collection of
 ;;; configuration options and shortcuts.
 
 ;;; Code:
+
+;;;; ============================================================
+;;;; Environment
+;;;; ============================================================
 
 ;;; https://github.com/jscheid/prettier.el/issues/33#issuecomment-657221634
 (setenv "NODE_PATH" "/opt/homebrew/lib/node_modules/npm")
@@ -11,11 +15,10 @@
 ;;; macOS ls doesn't support --dired; use Emacs's built-in ls emulation
 (setq dired-use-ls-dired nil)
 
-;;; Automatically turn on auto fill mode for text mode buffers
-(add-hook 'text-mode-hook 'text-mode-hook-identify)
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
+;;;; ============================================================
+;;;; Package setup
+;;;; ============================================================
 
-;;; Package setup
 (require 'package)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
@@ -33,9 +36,35 @@
 (use-package diminish
   :commands 'diminish)
 
+;;;; ============================================================
+;;;; Emacs 30 built-ins
+;;;; ============================================================
 
-;;;; Project Management
-;;; Projectile
+;;; which-key — show available keybindings in popup
+(which-key-mode)
+
+;;; completion-preview — inline ghost text completions
+(global-completion-preview-mode)
+
+;;; Tree-sitter mode remapping — use tree-sitter modes when grammars are available
+(setq major-mode-remap-alist
+      '((python-mode     . python-ts-mode)
+        (js-mode         . js-ts-mode)
+        (typescript-mode . typescript-ts-mode)
+        (json-mode       . json-ts-mode)
+        (yaml-mode       . yaml-ts-mode)
+        (sh-mode         . bash-ts-mode)
+        (java-mode       . java-ts-mode)
+        (css-mode        . css-ts-mode)
+        (html-mode       . html-ts-mode)))
+
+;;; EditorConfig — respect .editorconfig files
+(editorconfig-mode 1)
+
+;;;; ============================================================
+;;;; Project management
+;;;; ============================================================
+
 (use-package projectile
   :commands (projectile-switch-project
              projectile-find-file
@@ -51,7 +80,10 @@
   :bind-keymap
   ("C-c p" . projectile-command-map))
 
+;;;; ============================================================
 ;;;; Autocompletion
+;;;; ============================================================
+
 (use-package company
   :init
   (global-company-mode)
@@ -72,7 +104,10 @@
   (setq-default company-quickhelp-delay 0.2)
   (company-quickhelp-mode))
 
-;;;; IDE LSP stuff
+;;;; ============================================================
+;;;; LSP and diagnostics
+;;;; ============================================================
+
 (use-package lsp-ui
   :after lsp-mode
   :commands (lsp-ui-mode lsp-ui)
@@ -91,7 +126,6 @@
   (setq-default lsp-diagnostics-provider :flycheck
                 lsp-auto-guess-root t))
 
-;;;;; Formatting and flycheck packages
 (use-package flycheck
   :init (global-flycheck-mode)
   :config (setq-default flycheck-disabled-checkers
@@ -109,31 +143,50 @@
   :hook (flycheck-mode . flycheck-color-mode-line-mode)
   :commands flycheck-color-mode-line-mode)
 
-;; Latex related
-(use-package reftex
-  :hook (LaTeX-mode))
+;;;; ============================================================
+;;;; TypeScript (Tide)
+;;;; ============================================================
 
-;;; Flyspell does online spell checking
-(dolist (hook '(LaTeX-mode-hook))
-  (add-hook hook (lambda () (flyspell-mode 1))))
+(defun setup-tide-mode ()
+  "Setup Typescript Mode."
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  (company-mode +1))
 
-;;;; END Formatting and flycheck packages
+(setq company-tooltip-align-annotations t)
 
-;;; magit: Git porcelain
+;; Format typescript buffers before saving (buffer-local)
+(add-hook 'typescript-mode-hook
+          (lambda () (add-hook 'before-save-hook #'tide-format-before-save nil t)))
+(add-hook 'typescript-ts-mode-hook
+          (lambda () (add-hook 'before-save-hook #'tide-format-before-save nil t)))
+
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+(add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
+
+;;;; ============================================================
+;;;; Version control
+;;;; ============================================================
+
 (use-package magit
   :commands magit-status
   :bind ("C-x g" . magit-status))
 
-;;; Support for github, PRs, etc.
 (use-package forge
   :after magit)
 
-;;; git-gutter
 (use-package git-gutter
   :init
   (global-git-gutter-mode +1))
 
-;;; Markdown mode support
+;;;; ============================================================
+;;;; Modes and file types
+;;;; ============================================================
+
 (use-package markdown-mode
   :commands (gfm-mode
              markdown-mode)
@@ -145,22 +198,24 @@
 (use-package yaml-mode
   :mode ("\\.yml$" . yaml-mode))
 
-;;;; enable ibuffer and occur
-(use-package ibuffer
-  :bind
-  ("C-x C-b" . ibuffer)
-  ("C-c o" . occur))
+;;;; ============================================================
+;;;; LaTeX and spelling
+;;;; ============================================================
 
-;; Fill column indicator using built-in display-fill-column-indicator-mode (Emacs 27+)
-(setq-default fill-column 100)
-(add-hook 'python-mode-hook #'display-fill-column-indicator-mode)
-(add-hook 'yaml-mode-hook #'display-fill-column-indicator-mode)
-(add-hook 'json-mode-hook #'display-fill-column-indicator-mode)
-(add-hook 'markdown-mode-hook #'display-fill-column-indicator-mode)
+(use-package reftex
+  :hook (LaTeX-mode))
 
-;; Get the path we would have in a terminal
-(use-package exec-path-from-shell
-  :config (exec-path-from-shell-initialize))
+;;; Flyspell does online spell checking
+(dolist (hook '(LaTeX-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+
+;;;; ============================================================
+;;;; Text and formatting
+;;;; ============================================================
+
+;;; Automatically turn on auto fill mode for text mode buffers
+(add-hook 'text-mode-hook 'text-mode-hook-identify)
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 ;;; Filladapt makes filling (e.g. using M-q) much smarter about paragraphs
 ;;; that are indented and/or are set off with semicolons, dashes, etc.
@@ -169,6 +224,25 @@
   (setq-default filladapt-mode t)
   :hook
   (outline-mode . turn-off-filladapt-mode))
+
+;; Fill column indicator using built-in display-fill-column-indicator-mode (Emacs 27+)
+(setq-default fill-column 100)
+(add-hook 'python-mode-hook #'display-fill-column-indicator-mode)
+(add-hook 'yaml-mode-hook #'display-fill-column-indicator-mode)
+(add-hook 'json-mode-hook #'display-fill-column-indicator-mode)
+(add-hook 'markdown-mode-hook #'display-fill-column-indicator-mode)
+
+;; Highlight trailing white space using whitespace package
+(use-package whitespace
+  :init
+  (setq show-trailing-whitespace t)
+  (setq whitespace-line-column 100)
+  :commands
+  whitespace-mode)
+
+;;;; ============================================================
+;;;; Minibuffer and M-x
+;;;; ============================================================
 
 ;; Put the most common things first for M-x
 (use-package smex
@@ -180,15 +254,27 @@
   :commands (counsel-ag
              counsel-rg))
 
-;; Highlight trailing white space using whitespace package
-(use-package whitespace
-  :init
-  (setq show-trailing-whitespace t)
-  (setq whitespace-line-column 100)
-  :commands
-  whitespace-mode)
+;;;; ============================================================
+;;;; Buffer management
+;;;; ============================================================
 
-;;;; General Emacs configuration
+(use-package ibuffer
+  :bind
+  ("C-x C-b" . ibuffer)
+  ("C-c o" . occur))
+
+;;;; ============================================================
+;;;; Shell environment
+;;;; ============================================================
+
+;; Get the path we would have in a terminal
+(use-package exec-path-from-shell
+  :config (exec-path-from-shell-initialize))
+
+;;;; ============================================================
+;;;; General settings
+;;;; ============================================================
+
 ;;; Make sure autosuggest of keybindings is enabled
 (setq suggest-key-bindings t)
 ;;; Turn on line and column number mode by default
@@ -198,9 +284,6 @@
 ;;; Matched delimiters
 (electric-pair-mode 1)
 (electric-indent-mode 1)
-
-;;; Key rebindings
-(define-key global-map "\C-x?" 'help-command)
 
 ;;; formatting options
 (setq-default indent-tabs-mode nil)
@@ -215,7 +298,13 @@
 ;;;; UTF-8
 (define-coding-system-alias 'UTF-8 'utf-8)
 
-;;;; My functions
+;; Display time and date on the modeline
+(setq display-time-day-and-date t)
+(display-time)
+
+;;;; ============================================================
+;;;; Custom defuns
+;;;; ============================================================
 
 ;;; Prevent accidental closing
 (defun ask-before-closing ()
@@ -227,10 +316,6 @@
 
 (when window-system
   (global-set-key (kbd "C-x C-c") 'ask-before-closing))
-
-;; Display time and date on the modeline
-(setq display-time-day-and-date t)
-(display-time)
 
 (defun truncon ()
   (interactive)
@@ -317,12 +402,6 @@
   (save-buffer)
   (kill-buffer nil))
 
-;;;; Keybindings
-(global-set-key "\C-cd" 'insert-current-date)
-(global-set-key "\C-cs" 'insert-datestamp)
-(global-set-key "\C-ct" 'insert-current-time)
-(global-set-key "\C-c-" 'insert-dashed-line)
-
 ;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
 (defun unfill-paragraph (&optional region)
   "Takes a multi-line paragraph and makes it into a single line of text."
@@ -332,27 +411,19 @@
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 
-;;; TIDE for typescript
-(defun setup-tide-mode ()
-  "Setup Typescript Mode."
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  (company-mode +1))
+;;;; ============================================================
+;;;; Keybindings
+;;;; ============================================================
 
-(setq company-tooltip-align-annotations t)
+(define-key global-map "\C-x?" 'help-command)
+(global-set-key "\C-cd" 'insert-current-date)
+(global-set-key "\C-cs" 'insert-datestamp)
+(global-set-key "\C-ct" 'insert-current-time)
+(global-set-key "\C-c-" 'insert-dashed-line)
 
-;; Format typescript buffers before saving (buffer-local)
-(add-hook 'typescript-mode-hook
-          (lambda () (add-hook 'before-save-hook #'tide-format-before-save nil t)))
-(add-hook 'typescript-ts-mode-hook
-          (lambda () (add-hook 'before-save-hook #'tide-format-before-save nil t)))
-
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
-(add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
+;;;; ============================================================
+;;;; Custom file (managed by Emacs customize system)
+;;;; ============================================================
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -372,4 +443,4 @@
  ;; If there is more than one, they won't work right.
  )
 
-;;; .emacs ends here
+;;; init.el ends here

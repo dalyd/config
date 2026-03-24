@@ -59,7 +59,6 @@ echo ""
 # Shared core files
 echo "Linking shared config:"
 link "$SCRIPT_DIR/.zshrc"              "$HOME/.zshrc"
-link "$SCRIPT_DIR/.emacs"              "$HOME/.emacs"
 link "$SCRIPT_DIR/.emacs.d"            "$HOME/.emacs.d"
 link "$SCRIPT_DIR/.gitconfig"          "$HOME/.gitconfig"
 link "$SCRIPT_DIR/.gitignore_global"   "$HOME/.gitignore_global"
