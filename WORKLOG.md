@@ -1,3 +1,27 @@
+## 2026-03-24
+
+### Changed
+- Modernized Emacs config: moved `.emacs` → `.emacs.d/init.el`, replaced third-party packages with Emacs 30 built-ins and lighter alternatives
+  - Ivy/Counsel/Smex → Vertico + Orderless + Marginalia + Consult + Embark
+  - Company → Corfu + Cape
+  - lsp-mode/Flycheck/Tide → Eglot + Flymake
+  - Projectile → project.el (kept `C-c p` prefix)
+  - git-gutter → diff-hl
+- Enabled tree-sitter modes, which-key, completion-preview, editorconfig
+- Added claude-code-ide.el (eat terminal backend) for running Claude Code in Emacs
+- Installed tree-sitter grammars (10 languages), language servers (pyright, typescript-language-server, bash-language-server), ripgrep
+
+### Decisions
+- Skip gptel — Claude Code subscription doesn't include API credits, and Claude Code CLI is sufficient
+- Use ABI-14 grammar versions — Emacs 30.2 doesn't support ABI 15 from tree-sitter 0.26.x yet
+- Use eat over vterm — pure elisp, no compilation needed
+
+### Open threads
+- claude-code-ide TUI redraws entire screen on each interaction — inherent to React/Ink, no config fix
+- NODE_PATH env var for prettier.el may be stale
+
+---
+
 ## 2026-03-23 (session 3)
 
 ### Investigated
