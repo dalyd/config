@@ -69,6 +69,19 @@ compinit -u
 # iTerm2 integration
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+# Claude Code with Emacs MCP integration
+function claude() {
+    local project_dir="$(pwd)/"
+    local session_id
+    session_id=$(emacsclient --eval "(my/claude-code-register-project \"$project_dir\")" 2>/dev/null | tr -d '"')
+    if [[ -n "$session_id" ]]; then
+        command claude --mcp-config "{\"mcpServers\":{\"emacs-tools\":{\"type\":\"http\",\"url\":\"http://localhost:21567/mcp/$session_id\"}}}" "$@"
+    else
+        echo "Warning: Could not register project with Emacs MCP server (is Emacs running?)"
+        command claude "$@"
+    fi
+}
+
 # Machine-specific overrides (symlinked from profiles/)
 source ~/.zshrc.local 2>/dev/null
 

@@ -158,7 +158,49 @@
   :bind ("C-c C-'" . claude-code-ide-menu)
   :config
   (setq claude-code-ide-terminal-backend 'eat)
-  (claude-code-ide-emacs-tools-setup))
+  (claude-code-ide-emacs-tools-setup)
+  ;; Run MCP tools server on a fixed port so external Claude Code can connect
+  (setq claude-code-ide-enable-mcp-server t)
+  (setq claude-code-ide-mcp-server-port 21567))
+
+;; Start the MCP server at Emacs startup and keep it running
+(defun my/claude-code-mcp-start ()
+  "Start the claude-code-ide MCP tools server for external Claude Code sessions."
+  (interactive)
+  (require 'claude-code-ide)
+  (require 'claude-code-ide-emacs-tools)
+  (require 'claude-code-ide-mcp-server)
+  (claude-code-ide-emacs-tools-setup)
+  (let ((port (claude-code-ide-mcp-server-ensure-server)))
+    (when port
+      (message "Claude Code MCP server running on port %d" port))))
+
+(defun my/claude-code-register-project (project-dir)
+  "Register PROJECT-DIR with the MCP server for external Claude Code.
+Returns the session ID. Call via emacsclient before launching claude."
+  (require 'claude-code-ide-mcp-server)
+  (claude-code-ide-mcp-server-ensure-server)
+  (let* ((dir-name (file-name-nondirectory (directory-file-name project-dir)))
+         (session-id (format "ext-%s" dir-name))
+         (buf (or (car (seq-filter
+                        (lambda (b)
+                          (string-prefix-p project-dir
+                                          (or (buffer-file-name b)
+                                              (with-current-buffer b default-directory)
+                                              "")))
+                        (buffer-list)))
+                  (current-buffer))))
+    ;; Remove old session if re-registering
+    (claude-code-ide-mcp-server-session-ended session-id)
+    (claude-code-ide-mcp-server-session-started session-id project-dir buf)
+    session-id))
+
+(add-hook 'emacs-startup-hook #'my/claude-code-mcp-start)
+
+;; Ensure emacs server is running so emacsclient can register projects
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 
 ;;;; ============================================================
 ;;;; Modes and file types

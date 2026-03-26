@@ -1,3 +1,18 @@
+## 2026-03-25
+
+### Changed
+- Added Emacs MCP server integration for external Claude Code sessions
+  - MCP tools server starts at Emacs startup on fixed port 21567
+  - `my/claude-code-register-project` registers project context via emacsclient
+  - Shell wrapper `claude()` in .zshrc auto-registers project and passes `--mcp-config`
+- Claude Code in terminal now has access to Emacs tools: imenu, xref, tree-sitter, project info
+
+### Decisions
+- Use shell wrapper + emacsclient instead of static `.mcp.json` — each project needs its own session ID
+- Graceful fallback: if Emacs isn't running, Claude Code launches without MCP tools
+
+---
+
 ## 2026-03-24
 
 ### Changed
