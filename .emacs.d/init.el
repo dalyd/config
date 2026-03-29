@@ -75,6 +75,9 @@
 (global-set-key (kbd "C-c p k") #'project-kill-buffers)
 (global-set-key (kbd "C-c p s") #'project-shell)
 
+;; Use ripgrep for xref-based searches (project-find-regexp, etc.)
+(setq xref-search-program 'ripgrep)
+
 ;; When switching projects, open magit (like projectile-switch-project-action)
 (setq project-switch-commands 'magit-status)
 
