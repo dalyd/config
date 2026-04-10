@@ -1,2 +1,7 @@
 # Work machine overrides
 # Add work-specific PATH entries, tools, env vars here
+export PATH="$HOME/.local/bin:$PATH"
+
+
+# Wave config auto-added by 'wave setup'
+source /Users/daviddaly/.waverc
