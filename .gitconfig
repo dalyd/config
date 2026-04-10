@@ -1,7 +1,7 @@
 [include]
 	path = ~/.gitconfig.local
 [user]
-	name = dalyd
+	name = David Daly
 [core]
 	editor = emacs
 	excludesfile = ~/.gitignore_global
