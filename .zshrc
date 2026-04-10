@@ -84,8 +84,3 @@ function claude() {
 
 # Machine-specific overrides (symlinked from profiles/)
 source ~/.zshrc.local 2>/dev/null
-
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/daviddaly/.lmstudio/bin"
-# End of LM Studio CLI section
-
