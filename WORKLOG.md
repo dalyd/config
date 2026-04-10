@@ -1,3 +1,21 @@
+## 2026-04-10
+
+### Changed
+- Split `.claude/settings.json` into per-profile files: `profiles/personal/claude-settings.json` (with obsidian/anthropic skills) and `profiles/work/claude-settings.json` (minimal, only `typescript-lsp`)
+- `install.sh` no longer symlinks a shared `.claude/settings.json`; each profile supplies its own
+- Deleted the now-unused shared `.claude/settings.json`
+
+### Decisions
+- Enterprise (work) account blocks the obsidian/anthropic skill marketplaces, so those plugin entries live only in the personal profile to avoid startup warnings at work
+- Kept `typescript-lsp@claude-plugins-official` enabled in both profiles (official marketplace, unlikely to be blocked) — adjust if enterprise flags it
+- Plugin-split via profile rather than a jq-merge step: duplication is ~5 lines of `model`/`statusLine` and keeps install.sh simple
+
+### Open threads
+- After pulling on any existing machine, re-run `./install.sh <profile>` to repoint `~/.claude/settings.json` at the new profile file
+- On fresh machine: after `install.sh`, start `claude` and run `/plugin marketplace add kepano/obsidian-skills`, `/plugin marketplace add pablo-mano/Obsidian-CLI-skill`, `/plugin marketplace add anthropics/skills` to actually fetch the plugin contents (the settings file only declares which are *enabled*)
+
+---
+
 ## 2026-03-25
 
 ### Changed

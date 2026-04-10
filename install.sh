@@ -65,12 +65,12 @@ link "$SCRIPT_DIR/.gitignore_global"   "$HOME/.gitignore_global"
 link "$SCRIPT_DIR/.tmux.conf"          "$HOME/.tmux.conf"
 link "$SCRIPT_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
 link "$SCRIPT_DIR/.claude/CLAUDE.md"     "$HOME/.claude/CLAUDE.md"
-link "$SCRIPT_DIR/.claude/settings.json" "$HOME/.claude/settings.json"
 link "$SCRIPT_DIR/.claude/statusline.sh" "$HOME/.claude/statusline.sh"
 echo ""
 
 # Profile-specific overrides
 echo "Linking profile overrides ($PROFILE):"
+link "$PROFILE_DIR/claude-settings.json" "$HOME/.claude/settings.json"
 for file in "$PROFILE_DIR"/.*; do
     basename="$(basename "$file")"
     # Skip . and ..
