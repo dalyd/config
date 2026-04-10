@@ -5,6 +5,8 @@
     "command": "~/.claude/statusline.sh"
   },
   "enabledPlugins": {
+    "gh-pr@wave": true,
+    "money-srv@wave": true,
     "typescript-lsp@claude-plugins-official": true
   }
 }
