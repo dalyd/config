@@ -47,6 +47,18 @@
 ;;; completion-preview — inline ghost text completions
 (global-completion-preview-mode)
 
+;;; Tree-sitter grammar sources — for M-x treesit-install-language-grammar
+(setq treesit-language-source-alist
+      '((python     "https://github.com/tree-sitter/tree-sitter-python")
+        (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
+        (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+        (json       "https://github.com/tree-sitter/tree-sitter-json")
+        (yaml       "https://github.com/tree-sitter-grammars/tree-sitter-yaml")
+        (bash       "https://github.com/tree-sitter/tree-sitter-bash")
+        (java       "https://github.com/tree-sitter/tree-sitter-java")
+        (css        "https://github.com/tree-sitter/tree-sitter-css")
+        (html       "https://github.com/tree-sitter/tree-sitter-html")))
+
 ;;; Tree-sitter mode remapping — use tree-sitter modes when grammars are available
 (setq major-mode-remap-alist
       '((python-mode     . python-ts-mode)
@@ -115,20 +127,51 @@
           typescript-mode typescript-ts-mode
           sh-mode bash-ts-mode) . eglot-ensure)
   :config
-  (setq eglot-autoshutdown t))   ; kill server when last buffer closes
+  (setq eglot-autoshutdown t)   ; kill server when last buffer closes
+  ;; Use pyright for Python (eglot defaults to pylsp)
+  (add-to-list 'eglot-server-programs
+               '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
+  ;; Eglot's file watcher handler crashes on large monorepos — pyright
+  ;; requests glob "**" which overwhelms it. Override to silently accept
+  ;; the registration without actually watching. Pyright still re-checks
+  ;; files on open/save. Must be inside :config so eglot is already loaded.
+  (cl-defmethod eglot-register-capability
+    (_server (_method (eql workspace/didChangeWatchedFiles)) _id &rest _params)
+    "Accept but ignore file watcher registrations."
+    nil))
 
-;; Flymake is built-in and works with Eglot out of the box
-;; No extra config needed — Eglot activates it automatically
+;; flymake-ruff — ruff lint diagnostics as a Flymake backend
+;; Eglot only supports one LSP server per buffer (pyright), so ruff
+;; diagnostics come through this separate Flymake backend.
+(use-package flymake-ruff
+  :hook ((python-mode python-ts-mode) . flymake-ruff-load))
 
 ;;;; ============================================================
-;;;; Format on save (via Eglot)
+;;;; Format on save
 ;;;; ============================================================
 
-;; Format buffer via LSP before saving (replaces tide-format-before-save)
-(defun my/eglot-format-on-save ()
-  (when (bound-and-true-p eglot--managed-mode)
-    (eglot-format-buffer)))
-(add-hook 'before-save-hook #'my/eglot-format-on-save)
+(defun my/ruff-format-buffer ()
+  "Format the current buffer with ruff format.
+Uses a temp file so the buffer is unchanged if ruff fails."
+  (when buffer-file-name
+    (let ((tmp-file (make-temp-file "ruff-fmt-" nil ".py")))
+      (unwind-protect
+          (progn
+            (write-region (point-min) (point-max) tmp-file nil 'silent)
+            (when (zerop (call-process "ruff" nil nil nil
+                                       "format" "--stdin-filename" buffer-file-name tmp-file))
+              (insert-file-contents tmp-file nil nil nil t)))
+        (delete-file tmp-file)))))
+
+(defun my/format-on-save ()
+  "Format buffer before saving: ruff for Python, eglot for other LSP buffers."
+  (cond
+   ((derived-mode-p 'python-mode 'python-ts-mode)
+    (my/ruff-format-buffer))
+   ((bound-and-true-p eglot--managed-mode)
+    (eglot-format-buffer))))
+
+(add-hook 'before-save-hook #'my/format-on-save)
 
 ;;;; ============================================================
 ;;;; Version control
