@@ -93,6 +93,10 @@
 ;; When switching projects, open magit (like projectile-switch-project-action)
 (setq project-switch-commands 'magit-status)
 
+;; Treat any subdir with its own pyrightconfig.json as a separate project,
+;; so Eglot launches pyright-langserver rooted there (picks up its venv).
+(setq project-vc-extra-root-markers '("pyrightconfig.json"))
+
 ;;;; ============================================================
 ;;;; Autocompletion
 ;;;; ============================================================
