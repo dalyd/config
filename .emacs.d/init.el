@@ -91,7 +91,7 @@
 (setq xref-search-program 'ripgrep)
 
 ;; When switching projects, open magit (like projectile-switch-project-action)
-(setq project-switch-commands 'magit-status)
+(setq project-switch-commands 'magit-project-status)
 
 ;; Treat any subdir with its own pyrightconfig.json as a separate project,
 ;; so Eglot launches pyright-langserver rooted there (picks up its venv).
