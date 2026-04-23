@@ -96,6 +96,8 @@
 ;; Treat any subdir with its own pyrightconfig.json as a separate project,
 ;; so Eglot launches pyright-langserver rooted there (picks up its venv).
 (setq project-vc-extra-root-markers '("pyrightconfig.json"))
+;; Generic solution for other things I want to treat as a project. Add a .project.json file
+(setq project-vc-extra-root-markers '(".project.json"))
 
 ;;;; ============================================================
 ;;;; Autocompletion
