@@ -1,3 +1,34 @@
+## 2026-06-04
+
+### Changed
+- `.emacs.d/init.el`: added `ast-grep` use-package block (after `embark-consult`) for structural/AST code search. Bound `M-s a` → `ast-grep-project`, `M-s A` → `ast-grep-search`
+- Installed the `ast-grep` CLI binary via Homebrew (0.43.0, `/opt/homebrew/bin/ast-grep`) — the package shells out to it
+
+### Decisions
+- Used MELPA `:ensure t` rather than the GitHub `:vc`/straight install in the package's README — ast-grep.el is now on MELPA, which is simpler and fits the existing `use-package-always-ensure t` setup and auto-updates
+- Bindings live under the existing `M-s` search prefix (alongside `M-s r/l/g`); consult (already configured) gives async live results
+
+### Gotchas
+- Install initially 404'd (`ast-grep-20250703.723.tar: Not found`): the local MELPA `archive-contents` cache was stale and MELPA only keeps the latest tarball. Fixed with `M-x package-refresh-contents` (current ver `20260514.1725`). Working now.
+
+## 2026-06-03
+
+### Investigated
+- Why a 1Password permission prompt appeared on every new shell: traced to two eager `op read` calls added to `profiles/work/.zshrc.local` for `DD_API_KEY`/`DD_APP_KEY`, which run at startup via `.zshrc` → `.zshrc.local`
+
+### Changed
+- `profiles/work/.zshrc.local`: replaced the eager `export DD_*=$(op read ...)` lines with a guarded `_claude_load_env()` loader (early-returns once `$DD_API_KEY` is set)
+- `.zshrc`: `claude()` wrapper now calls `_claude_load_env` if defined, before launching claude
+
+### Decisions
+- Keys are only used by Claude, so the `claude()` wrapper is the lazy trigger — fetch on first `claude` per shell, never on plain shell open
+- Loader lives in the work profile (keeps Datadog secrets out of the shared `.zshrc`); shared wrapper guards with `typeset -f` so it's a no-op on machines without the work profile
+
+### Open threads
+- Existing shells need `source ~/.zshrc` to pick up the change; new shells get it automatically
+
+---
+
 ## 2026-04-10
 
 ### Changed
