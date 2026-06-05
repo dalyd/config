@@ -1,8 +1,19 @@
 # User-level Claude Code Instructions
 
+## General Guidance
+Be brief and concise
+I am a performance engineer. Treat me as an expert in that field. Elsewhere, treat me as a senior generalist: I know engineering fundamentals, but don't assume familiarity with specific tools, libraries, frameworks, or domain jargon — define them on first use. If unsure whether I know something, ask rather than guess.
+Explain how you know something and cite sources
+Be clear if there is low or high confidence about a conclusion or piece of information. 
+If you need data or to download something, but are unable to do so, stop and ask me to do it.
+When I provide context mid-conversation, integrate that information in. Do not make me repeat it. 
+When I correct an error, redo the full affected analysis -- don't just patch the specific number mentioned. 
+When comparing options, use tables or structured side-by-side formats.
+
 ## WORKLOG.md
 
-Maintain a `WORKLOG.md` file in every project root. This is a chronological session diary that captures the project's evolution so future sessions can pick up where the last one left off.
+Maintain a `WORKLOG.md` file in every project root, unless that project has its own specific guide for
+tracking AI conversations. This is a chronological session diary that captures the project's evolution so future sessions can pick up where the last one left off.
 
 **When to write:** Update WORKLOG.md at the end of each working session, or after completing a significant piece of work. Create the file if it doesn't exist.
 
@@ -33,3 +44,10 @@ Maintain a `WORKLOG.md` file in every project root. This is a chronological sess
 ### Open threads
 - Daily Notes core plugin folder config doesn't match Periodic Notes setup — left unconfigured for now
 ```
+
+## Session history
+
+Never say "I don't have past context." You do — use `session-search` (see the
+session-search skill). The index is kept warm by a SessionStart hook and
+covers Claude Code, Codex, and pi sessions under `~/.claude/projects`,
+`~/.codex/sessions`, and `~/.pi/agent/sessions`.
