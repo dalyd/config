@@ -71,6 +71,8 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 # Claude Code with Emacs MCP integration
 function claude() {
+    # Lazily load any work/profile-specific env (e.g. secrets) on first use.
+    typeset -f _claude_load_env >/dev/null && _claude_load_env
     local project_dir="$(pwd)/"
     local session_id
     session_id=$(emacsclient --eval "(my/claude-code-register-project \"$project_dir\")" 2>/dev/null | tr -d '"')
@@ -84,3 +86,6 @@ function claude() {
 
 # Machine-specific overrides (symlinked from profiles/)
 source ~/.zshrc.local 2>/dev/null
+
+# Wave config auto-added by 'wave setup'
+source /Users/daviddaly/.waverc

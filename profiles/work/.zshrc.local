@@ -9,5 +9,13 @@ source /Users/daviddaly/.waverc
 # bun completions
 [ -s "/Users/daviddaly/.bun/_bun" ] && source "/Users/daviddaly/.bun/_bun"
 
+# Lazily fetch Datadog keys from 1Password the first time `claude` runs this
+# shell, instead of on every shell startup (avoids an `op` auth prompt per shell).
+_claude_load_env() {
+  [[ -n $DD_API_KEY ]] && return  # already loaded this shell
+  export DD_API_KEY=$(op read "op://Employee/Datadog API Key/credential")
+  export DD_APP_KEY=$(op read "op://Employee/Datadog App Key/credential")
+}
+
 # bun
 export BUN_INSTALL="$HOME/.bun"
