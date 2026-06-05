@@ -93,11 +93,9 @@
 ;; When switching projects, open magit (like projectile-switch-project-action)
 (setq project-switch-commands 'magit-project-status)
 
-;; Treat any subdir with its own pyrightconfig.json as a separate project,
-;; so Eglot launches pyright-langserver rooted there (picks up its venv).
-(setq project-vc-extra-root-markers '("pyrightconfig.json"))
-;; Generic solution for other things I want to treat as a project. Add a .project.json file
-(setq project-vc-extra-root-markers '(".project.json"))
+;; Treat any subdir with its own pyrightconfig.json (or .project.json) as a
+;; separate project, so Eglot launches its language server rooted there.
+(setq project-vc-extra-root-markers '("pyrightconfig.json" ".project.json"))
 
 ;;;; ============================================================
 ;;;; Autocompletion
@@ -264,7 +262,20 @@ Returns the session ID. Call via emacsclient before launching claude."
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown"))
+  :init
+  (setq markdown-command "multimarkdown")
+  (setq markdown-xhtml-header-content
+        "<script type=\"module\">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+window.addEventListener('DOMContentLoaded', () => {
+  mermaid.run({ querySelector: 'pre > code.mermaid' });
+});
+</script>"))
+
+(use-package markdown-mermaid
+  :after markdown-mode
+  :bind (:map markdown-mode-map
+              ("C-c C-c m" . markdown-mermaid-preview)))
 
 (use-package yaml-mode
   :mode ("\\.yml$" . yaml-mode))
@@ -345,6 +356,13 @@ Returns the session ID. Call via emacsclient before launching claude."
 
 (use-package embark-consult
   :after (embark consult))
+
+;; ast-grep — structural (AST-based) code search/rewrite via the ast-grep CLI.
+;; Requires the `ast-grep` CLI binary on PATH (brew install ast-grep).
+;; Async live results come from consult (already configured above).
+(use-package ast-grep
+  :bind (("M-s a" . ast-grep-project)     ; project-wide structural search
+         ("M-s A" . ast-grep-search)))    ; search from current directory
 
 ;;;; ============================================================
 ;;;; Buffer management
