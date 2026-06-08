@@ -347,8 +347,7 @@ window.addEventListener('DOMContentLoaded', () => {
          ("M-g g" . consult-goto-line)
          ("M-g M-g" . consult-goto-line)
          ("M-s r" . consult-ripgrep)        ; replaces counsel-rg
-         ("M-s l" . consult-line)           ; search lines in buffer
-         ("M-s g" . consult-grep)))
+         ("M-s l" . consult-line)))         ; search lines in buffer
 
 ;; Embark — context actions on minibuffer candidates (like right-click menu)
 (use-package embark

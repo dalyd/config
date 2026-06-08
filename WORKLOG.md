@@ -1,3 +1,15 @@
+## 2026-06-08
+
+### Investigated
+- Whether [dmtrKovalenko/fff](https://github.com/dmtrKovalenko/fff) (Rust file-search toolkit: fuzzy filename + content search, resident in-memory frecency index) has an Emacs integration — it does not. Official integrations are Neovim, Claude Code/Cursor/Cline via MCP, pi, and a Node SDK. (The old splode.com elisp "fff" is unrelated.)
+
+### Changed
+- `.emacs.d/init.el`: removed the `M-s g` → `consult-grep` binding from the consult `:bind` block
+
+### Decisions
+- Not adding fff: no Emacs package exists, and its main win (sub-10ms queries on 500k-file repos vs multi-second `rg` spawns) doesn't apply to normal repos. If a huge monorepo ever needs it, the place to wire it in is Claude Code via fff's MCP server, not Emacs.
+- Dropped `consult-grep`: redundant with `consult-ripgrep` (`M-s r`) and slower; `xref-search-program` is already `ripgrep` so plain grep added nothing.
+
 ## 2026-06-04
 
 ### Changed
