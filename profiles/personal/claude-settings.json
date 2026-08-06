@@ -8,7 +8,8 @@
     "obsidian@obsidian-skills": true,
     "obsidian-cli@obsidian-cli-skill": true,
     "document-skills@anthropic-agent-skills": true,
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "obsidian-skills": {

@@ -4,6 +4,12 @@ Personal configuration files (dotfiles), managed with symlinks.
 
 ## Setup
 
+Install dependencies via Homebrew:
+
+```bash
+brew install starship pyenv zsh-autosuggestions zsh-syntax-highlighting zsh-completions
+```
+
 Clone the repo and run the install script with a profile name:
 
 ```bash

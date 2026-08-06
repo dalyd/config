@@ -86,6 +86,3 @@ function claude() {
 
 # Machine-specific overrides (symlinked from profiles/)
 source ~/.zshrc.local 2>/dev/null
-
-# Wave config auto-added by 'wave setup'
-source /Users/daviddaly/.waverc
