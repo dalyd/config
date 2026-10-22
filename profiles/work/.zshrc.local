@@ -11,3 +11,4 @@ source /Users/daviddaly/.waverc
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
+export PATH="$HOME/src/claude-skills/bin:$PATH"
