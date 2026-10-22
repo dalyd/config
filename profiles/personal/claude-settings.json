@@ -30,5 +30,6 @@
         "repo": "anthropics/skills"
       }
     }
-  }
+  },
+  "tui": "fullscreen"
 }
