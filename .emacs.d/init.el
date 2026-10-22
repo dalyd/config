@@ -56,6 +56,7 @@
         (yaml       "https://github.com/tree-sitter-grammars/tree-sitter-yaml")
         (bash       "https://github.com/tree-sitter/tree-sitter-bash")
         (java       "https://github.com/tree-sitter/tree-sitter-java")
+        (kotlin     "https://github.com/fwcd/tree-sitter-kotlin")
         (css        "https://github.com/tree-sitter/tree-sitter-css")
         (html       "https://github.com/tree-sitter/tree-sitter-html")))
 
@@ -127,14 +128,29 @@
   :ensure nil  ; built-in
   :hook ((python-mode python-ts-mode
           java-mode java-ts-mode
+          kotlin-ts-mode
           js-mode js-ts-mode
           typescript-mode typescript-ts-mode
           sh-mode bash-ts-mode) . eglot-ensure)
   :config
   (setq eglot-autoshutdown t)   ; kill server when last buffer closes
+  ;; kotlin-language-server resolves the whole Gradle/Maven classpath during
+  ;; LSP `initialize`, which blows past the default 30s on large monorepos —
+  ;; Eglot then SIGKILLs it (exit status 9). Give it room on first connect.
+  (setq eglot-connect-timeout 300)
   ;; Use pyright for Python (eglot defaults to pylsp)
   (add-to-list 'eglot-server-programs
                '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
+  ;; Use JetBrains kotlin-lsp (IntelliJ engine) instead of eglot's default
+  ;; fwcd kotlin-language-server, which can't resolve Android Gradle Plugin
+  ;; monorepos (getBootClasspath removed in modern AGP). Install:
+  ;;   brew install JetBrains/utils/kotlin-lsp
+  ;; Pin --system-path so the (slow) project index persists across reboots
+  ;; instead of going to a temp dir; first index is then a one-time cost.
+  (add-to-list 'eglot-server-programs
+               `((kotlin-mode kotlin-ts-mode)
+                 . ("kotlin-lsp" "--stdio"
+                    "--system-path" ,(expand-file-name "kotlin-lsp" "~/.cache"))))
   ;; Eglot's file watcher handler crashes on large monorepos — pyright
   ;; requests glob "**" which overwhelms it. Override to silently accept
   ;; the registration without actually watching. Pyright still re-checks
@@ -279,6 +295,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
 (use-package yaml-mode
   :mode ("\\.yml$" . yaml-mode))
+
+;; Kotlin — tree-sitter major mode (no built-in kotlin-mode in Emacs 30).
+;; Requires the kotlin tree-sitter grammar (installed via
+;; treesit-install-language-grammar) and the LSP server on PATH:
+;;   brew install kotlin-language-server
+;; Eglot already maps kotlin-ts-mode to kotlin-language-server, and the
+;; eglot :hook above runs eglot-ensure so M-. resolves via LSP, not etags.
+(use-package kotlin-ts-mode
+  :mode "\\.kts?\\'")
 
 ;;;; ============================================================
 ;;;; LaTeX and spelling

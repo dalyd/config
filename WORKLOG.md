@@ -1,3 +1,22 @@
+## 2026-06-25
+
+### Investigated
+- Why `M-.` in a Kotlin buffer prompted for a TAGS file: no Kotlin major mode or LSP was configured, so `xref-find-definitions` fell back to the etags backend.
+- Confirmed Emacs 30.2's Eglot already maps `(kotlin-mode kotlin-ts-mode) → "kotlin-language-server"`, so no `eglot-server-programs` entry was needed.
+
+### Changed
+- `.emacs.d/init.el`: added Kotlin support — `kotlin` grammar in `treesit-language-source-alist` (fwcd/tree-sitter-kotlin), `kotlin-ts-mode` to the Eglot `:hook` list, a `kotlin-ts-mode` use-package (`.kt`/`.kts`), `eglot-connect-timeout` raised to 300, and an `eglot-server-programs` override pointing Kotlin at `kotlin-lsp --stdio --system-path ~/.cache/kotlin-lsp` (JetBrains).
+- Installed the kotlin tree-sitter grammar → `~/.emacs.d/tree-sitter/libtree-sitter-kotlin.dylib`.
+- Installed JetBrains `kotlin-lsp` 262.7569.0 via `brew install JetBrains/utils/kotlin-lsp` (~1.3GB; bundles the IntelliJ analysis engine + its own JVM).
+- Installed `kotlin-language-server` 1.3.13 (fwcd) first, then **uninstalled** it (and its autoremoved `openjdk@21`) once kotlin-lsp worked. kotlin-lsp uses its bundled JVM, so removing openjdk@21 is safe — verified it still launches.
+
+### Decisions
+- Used `kotlin-ts-mode` (tree-sitter) over classic `kotlin-mode` to match the config's tree-sitter-first style. No `major-mode-remap-alist` entry needed since Emacs 30 has no built-in `kotlin-mode`.
+- **Switched from fwcd `kotlin-language-server` to JetBrains `kotlin-lsp`.** On an Android Gradle monorepo, fwcd's server failed `initialize` on every module with `Could not find method getBootClasspath()` — a known incompatibility with modern Android Gradle Plugin — so it never resolved a classpath and Eglot SIGKILLed it at the connect timeout. JetBrains kotlin-lsp (Apache-2.0, alpha, IntelliJ engine, experimental AGP support) connects and `M-.` now resolves. Confirmed working.
+
+### Open threads
+- None. `M-.` confirmed working on the monorepo; cache pinned to `~/.cache/kotlin-lsp` (one-time index cost), fwcd server uninstalled.
+
 ## 2026-06-08
 
 ### Investigated
