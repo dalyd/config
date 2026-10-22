@@ -1,3 +1,12 @@
+## 2026-10-22
+
+### Changed
+- Synced `.claude/CLAUDE.md` from `~/.claude/CLAUDE.md`, leaving out the monorepo-specific parts: the `perf-tools/` comment exception, "Local dev (monorepo)", and "Rules and hooks upkeep".
+- Dropped the worktree and push hook references (those hooks live only in the monorepo plugin), and changed the worktree base from `origin/dev` to the remote default branch.
+
+### Decisions
+- The repo is public, so it gets no content that names the monorepo or internal paths. Performance evidence, recurring monitoring, and worktrees are treated as generic.
+
 ## 2026-10-05
 
 ### Investigated
