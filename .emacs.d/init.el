@@ -15,6 +15,10 @@
 ;;; macOS ls doesn't support --dired; use Emacs's built-in ls emulation
 (setq dired-use-ls-dired nil)
 
+;;; libgccjit derives macOS 18.0 from Darwin 27; clang rejects it.
+(when (eq system-type 'darwin)
+  (setq native-comp-driver-options '("-Wl,-w" "-mmacosx-version-min=11.0")))
+
 ;;;; ============================================================
 ;;;; Package setup
 ;;;; ============================================================
@@ -172,16 +176,14 @@
 
 (defun my/ruff-format-buffer ()
   "Format the current buffer with ruff format.
-Uses a temp file so the buffer is unchanged if ruff fails."
+The buffer is unchanged if ruff fails."
   (when buffer-file-name
-    (let ((tmp-file (make-temp-file "ruff-fmt-" nil ".py")))
+    (let ((out (generate-new-buffer " *ruff-format*")))
       (unwind-protect
-          (progn
-            (write-region (point-min) (point-max) tmp-file nil 'silent)
-            (when (zerop (call-process "ruff" nil nil nil
-                                       "format" "--stdin-filename" buffer-file-name tmp-file))
-              (insert-file-contents tmp-file nil nil nil t)))
-        (delete-file tmp-file)))))
+          (when (zerop (call-process-region (point-min) (point-max) "ruff" nil out nil
+                                            "format" "--stdin-filename" buffer-file-name))
+            (replace-buffer-contents out))
+        (kill-buffer out)))))
 
 (defun my/format-on-save ()
   "Format buffer before saving: ruff for Python, eglot for other LSP buffers."
@@ -334,7 +336,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
 ;; Fill column indicator using built-in display-fill-column-indicator-mode (Emacs 27+)
 (setq-default fill-column 100)
-(add-hook 'python-mode-hook #'display-fill-column-indicator-mode)
+(add-hook 'python-base-mode-hook #'display-fill-column-indicator-mode)
+;;; Match ruff line-length.
+(add-hook 'python-base-mode-hook (lambda () (setq fill-column 88)))
 (add-hook 'yaml-mode-hook #'display-fill-column-indicator-mode)
 (add-hook 'json-mode-hook #'display-fill-column-indicator-mode)
 (add-hook 'markdown-mode-hook #'display-fill-column-indicator-mode)

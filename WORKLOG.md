@@ -1,3 +1,21 @@
+## 2026-10-05
+
+### Investigated
+- Ruff format-on-save was a no-op: `my/ruff-format-buffer` passed both `--stdin-filename` and a temp-file path; ruff ignores the path in favor of stdin ("Ignoring file … in favor of standard input"), and `call-process` gives it empty stdin, so it exited 0 with nothing changed.
+- Emacs 31.1 native-comp failing on every file with `clang: error: invalid version number in '-mmacosx-version-min=18.0'`. Cause: libgccjit's Darwin driver computes macOS version as Darwin major − 9 (27 → 18), which breaks after Apple's jump to year-based versions (macOS 27 = Darwin 27). Reproduced with `emacs -Q --batch` + `native-compile`.
+
+### Changed
+- Added to the Environment section of `.emacs.d/init.el`: set `native-comp-driver-options` to `("-Wl,-w" "-mmacosx-version-min=11.0")` on darwin. Verified a batch `native-compile` succeeds with it and fails without it.
+- Python buffers: `fill-column` 88 (matches ruff); indicator hook moved to `python-base-mode-hook` (old `python-mode-hook` never fired since python-mode is remapped to python-ts-mode).
+- `my/ruff-format-buffer` now pipes the buffer to ruff via `call-process-region` and applies stdout with `replace-buffer-contents` (keeps point). Verified: long line wraps at 88 under a project's ruff config; syntax error leaves buffer unchanged.
+
+### Decisions
+- Pass an explicit min version rather than disabling native-comp. 11.0 matches the bundled `lib-arm64-11` libgccjit.
+- Put it in init.el rather than early-init.el (user preference). Packages activated before init.el may still queue compiles with the bad flag.
+
+### Open threads
+- Remove the override once Emacs.app ships a libgccjit/GCC with fixed Darwin version mapping.
+
 ## 2026-06-25
 
 ### Investigated
